@@ -1,0 +1,31 @@
+{
+  "name": "decomplex-web-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "format:all": "npm run format && npm run lint"
+  },
+  "dependencies": {
+    "next": "16.0.8",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "16.0.8",
+    "prettier": "^3.7.4",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "typescript-eslint": "^8.49.0"
+  }
+}

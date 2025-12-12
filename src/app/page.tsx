@@ -1,3 +1,5 @@
-export default function Home() {
-  return <div className="flex min-h-screen items-center justify-center">Decomplex Web App</div>;
+import { redirect } from "next/navigation";
+
+export default function RootPage() {
+  redirect("/en");
 }

@@ -1,0 +1,12 @@
+{
+  "Common": {
+    "appName": "Decomplex",
+    "login": "Մուտք",
+    "logout": "Ելք"
+  },
+  "Auth": {
+    "title": "Մուտք գործել",
+    "email": "Էլ. փոստ",
+    "password": "Գաղտնաբառ"
+  }
+}

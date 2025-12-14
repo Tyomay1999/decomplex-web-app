@@ -1,25 +1,29 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { AppProviders } from "../providers";
-import { locales, Locale } from "../../i18n/config";
+import {locales} from "../../i18n/config";
+import type {Locale} from "../../i18n/config";
 
-export default async function LocaleLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+export function generateStaticParams(): Array<{ locale: string }> {
+    return locales.map((locale) => ({ locale }));
+}
 
-  if (!locales.includes(locale as Locale)) notFound();
+type Props = {
+    children: ReactNode;
+    params: Promise<{ locale: string }>;
+};
 
-  const messages = (await import(`../../../messages/${locale}.json`)).default;
+export default async function LocaleLayout({ children, params }: Props) {
+    const { locale } = await params;
 
-  return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <AppProviders>{children}</AppProviders>
-    </NextIntlClientProvider>
-  );
+    if (!locales.includes(locale as Locale)) notFound();
+
+    const messages = (await import(`../../../messages/${locale}.json`)).default;
+
+    return (
+        <NextIntlClientProvider locale={locale} messages={messages}>
+            <AppProviders>{children}</AppProviders>
+        </NextIntlClientProvider>
+    );
 }

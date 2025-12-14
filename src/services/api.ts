@@ -9,7 +9,7 @@ import {
   clearAuthCookies,
 } from "../lib/authCookies";
 import { clearSession, setCredentials } from "../features/auth/authSlice";
-import type { UserDto } from "../features/auth/authApi";
+import { UserDto } from "../features/auth/types";
 
 type ApiSuccessResponse<T> = { success: boolean; data: T };
 
@@ -21,10 +21,10 @@ type RefreshResponseData = {
 };
 
 function getLang(): string {
-  if (typeof window === "undefined") return "en";
-  const seg = window.location.pathname.split("/")[1];
-  if (seg === "en" || seg === "hy" || seg === "ru") return seg;
-  return "en";
+  if (typeof document === "undefined") return "en";
+  const match = document.cookie.match(/(?:^|;\s*)(?:dc_locale|NEXT_LOCALE)=([^;]+)/);
+  const v = match ? decodeURIComponent(match[1]) : "en";
+  return v === "en" || v === "hy" || v === "ru" ? v : "en";
 }
 
 const rawBaseQuery = fetchBaseQuery({

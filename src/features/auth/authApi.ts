@@ -2,18 +2,9 @@ import { api } from "../../services/api";
 import { setAuthCookies, getRefreshTokenFromCookie, clearAuthCookies } from "../../lib/authCookies";
 import { clearSession, setCredentials } from "./authSlice";
 import { getOrCreateFingerprint } from "../../lib/fingerprint";
+import { UserDto } from "./types";
 
 type ApiSuccessResponse<T> = { success: boolean; data: T };
-
-export type UserDto = {
-  id: string;
-  email: string;
-  role: string;
-  language?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
-  userType?: string | null;
-};
 
 export type CompanyDto = {
   id: string;
@@ -100,7 +91,6 @@ export const authApi = api.injectEndpoints({
       async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
         try {
           await queryFulfilled;
-        } catch {
         } finally {
           clearAuthCookies();
           dispatch(clearSession());

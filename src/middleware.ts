@@ -33,11 +33,15 @@ export function middleware(req: NextRequest) {
 
   const res = intlMiddleware(req);
 
-  res.cookies.set("dc_locale", seg, { path: "/" });
+  res.cookies.set("dc_locale", seg, {
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
 
   return res;
 }
 
 export const config = {
-  matcher: ["/((?!api).*)"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

@@ -1,0 +1,12 @@
+{
+  "Common": {
+    "appName": "Decomplex",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "Auth": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password"
+  }
+}

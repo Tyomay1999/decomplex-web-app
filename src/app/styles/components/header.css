@@ -1,0 +1,205 @@
+.main-header {
+  height: 64px;
+  border-bottom: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.logo-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.logo-subtitle {
+  font-size: 12px;
+  opacity: 0.6;
+  line-height: 1.2;
+}
+
+.header-center {
+  display: flex;
+  gap: 8px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  text-decoration: none;
+  background: transparent;
+}
+
+.btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btn-outline {
+  border: 1px solid;
+  background: transparent;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.auth-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.burger-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.burger-line {
+  width: 20px;
+  height: 2px;
+  background-color: currentColor;
+  transition: all 0.3s;
+}
+
+.burger-btn.active .burger-line:nth-child(1) {
+  transform: rotate(45deg) translateY(9px);
+}
+
+.burger-btn.active .burger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-btn.active .burger-line:nth-child(3) {
+  transform: rotate(-45deg) translateY(-9px);
+}
+
+.lang-wrap {
+  position: relative;
+}
+
+.lang-trigger {
+  padding: 6px 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  background-color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-caret {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.lang-caret.open {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 72px;
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 200;
+  background-color: inherit;
+}
+
+.lang-item {
+  padding: 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.lang-item.active {
+  outline: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    padding: 0 16px;
+  }
+  .header-center {
+    display: none;
+  }
+  .burger-btn {
+    display: flex;
+  }
+  .auth-actions {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-controls {
+    display: none;
+  }
+}

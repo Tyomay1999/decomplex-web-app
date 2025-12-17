@@ -8,5 +8,19 @@
     "title": "Sign in",
     "email": "Email",
     "password": "Password"
+  },
+  "header": {
+    "brand": "Jobs",
+    "tagline": "Find your next opportunity",
+    "home": "Home",
+    "profile": "Profile",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "logout": "Log Out",
+    "language": "Language",
+    "theme": {
+      "light": "Light mode",
+      "dark": "Dark mode"
+    }
   }
 }

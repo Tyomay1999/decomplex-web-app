@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AppProviders } from "../providers";
 import { locales } from "../../i18n/config";
 import type { Locale } from "../../i18n/config";
+import Header from "../../components/Header/Header";
 
 export function generateStaticParams(): Array<{ locale: string }> {
   return locales.map((locale) => ({ locale }));
@@ -23,6 +24,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <Header />
       <AppProviders>{children}</AppProviders>
     </NextIntlClientProvider>
   );

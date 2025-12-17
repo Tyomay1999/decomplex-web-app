@@ -196,6 +196,9 @@
   .auth-actions {
     display: none;
   }
+  .auth-actions > .logout {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {

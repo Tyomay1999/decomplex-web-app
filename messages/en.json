@@ -1,22 +1,39 @@
 {
   "Common": {
     "appName": "Decomplex",
-    "login": "Login",
-    "logout": "Logout"
+    "login": "Sign in",
+    "logout": "Sign out",
+    "loading": "Loading...",
+    "continue": "Continue"
   },
   "Auth": {
     "title": "Sign in",
+    "subtitleLogin": "Sign in to continue",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "noAccount": "No account?",
+    "signUp": "Create one",
+
+    "createAccount": "Create account",
+    "subtitleRegister": "Create an account to continue",
+    "accountType": "Account type",
+    "candidate": "Candidate",
+    "company": "Company",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "companyName": "Company name",
+    "haveAccount": "Already have an account?",
+    "logIn": "Sign in"
   },
   "header": {
     "brand": "Jobs",
     "tagline": "Find your next opportunity",
     "home": "Home",
     "profile": "Profile",
-    "login": "Log In",
-    "signup": "Sign Up",
-    "logout": "Log Out",
+    "login": "Sign in",
+    "signup": "Create account",
+    "logout": "Sign out",
     "language": "Language",
     "theme": {
       "light": "Light mode",

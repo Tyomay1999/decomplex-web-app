@@ -2,20 +2,37 @@
   "Common": {
     "appName": "Decomplex",
     "login": "Մուտք",
-    "logout": "Ելք"
+    "logout": "Ելք",
+    "loading": "Բեռնվում է...",
+    "continue": "Շարունակել"
   },
   "Auth": {
-    "title": "Մուտք գործել",
+    "title": "Մուտք",
+    "subtitleLogin": "Մուտք գործեք՝ շարունակելու համար",
     "email": "Էլ. փոստ",
-    "password": "Գաղտնաբառ"
+    "password": "Գաղտնաբառ",
+    "rememberMe": "Հիշել ինձ",
+    "noAccount": "Չունե՞ք հաշիվ",
+    "signUp": "Ստեղծել",
+
+    "createAccount": "Ստեղծել հաշիվ",
+    "subtitleRegister": "Ստեղծեք հաշիվ՝ շարունակելու համար",
+    "accountType": "Հաշվի տեսակ",
+    "candidate": "Թեկնածու",
+    "company": "Ընկերություն",
+    "firstName": "Անուն",
+    "lastName": "Ազգանուն",
+    "companyName": "Ընկերության անվանումը",
+    "haveAccount": "Արդեն ունե՞ք հաշիվ",
+    "logIn": "Մուտք"
   },
   "header": {
     "brand": "Աշխատանքներ",
-    "tagline": "Գտիր քո հաջորդ հնարավորությունը",
+    "tagline": "Գտեք ձեր հաջորդ հնարավորությունը",
     "home": "Գլխավոր",
     "profile": "Պրոֆիլ",
     "login": "Մուտք",
-    "signup": "Գրանցում",
+    "signup": "Ստեղծել հաշիվ",
     "logout": "Ելք",
     "language": "Լեզու",
     "theme": {

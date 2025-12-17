@@ -91,7 +91,7 @@ export function MobileMenu({
         </div>
 
         <button type="button" className="mobile-theme-btn" onClick={onToggleTheme}>
-          {theme === "light" ? `🌙 ️ ${t("theme.dark")}` : `☀️ ${t("theme.light")}`}
+          {theme === "light" ? `🌙 ${t("theme.dark")}` : `☀️ ${t("theme.light")}`}
         </button>
       </div>
 
@@ -101,33 +101,34 @@ export function MobileMenu({
         {t("home")}
       </Link>
 
-      {showProfileLink ? (
+      {showProfileLink && (
         <Link className="mobile-nav-link" href="/profile" onClick={close}>
           {t("profile")}
         </Link>
-      ) : null}
+      )}
 
       <div className="divider" style={{ height: 1, margin: "12px 0" }} />
 
       {!isAuthenticated ? (
         <>
-          {!hideLogin ? (
+          {!hideLogin && (
             <Link className="mobile-nav-link" href="/login" onClick={close}>
               {t("login")}
             </Link>
-          ) : null}
-
-          {!hideRegister ? (
+          )}
+          {!hideRegister && (
             <Link className="mobile-nav-link" href="/register" onClick={close}>
               {t("signup")}
             </Link>
-          ) : null}
+          )}
         </>
       ) : (
         <>
-          <div className="text-secondary" style={{ padding: "12px 16px" }}>
-            {userEmail ?? ""}
-          </div>
+          {userEmail && (
+            <div className="text-secondary" style={{ padding: "12px 16px" }}>
+              {userEmail}
+            </div>
+          )}
           <button
             type="button"
             className="mobile-nav-link"

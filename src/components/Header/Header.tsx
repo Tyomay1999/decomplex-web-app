@@ -14,14 +14,16 @@ import type { Lang } from "./types";
 type Props = {
   isAuthenticated?: boolean;
   userEmail?: string | null;
+  onLogout?: () => void;
 };
 
-export default function Header({ isAuthenticated = false, userEmail = null }: Props) {
+export default function Header({ isAuthenticated = false, userEmail = null, onLogout }: Props) {
   const t = useTranslations("header");
 
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams<{ locale: Lang }>();
+
   const lang: Lang =
     params.locale === "en" || params.locale === "hy" || params.locale === "ru"
       ? params.locale
@@ -52,9 +54,8 @@ export default function Header({ isAuthenticated = false, userEmail = null }: Pr
 
   const showProfileLink = isAuthenticated;
 
-  const isLoginPage = (pathname ?? "").endsWith("/login") || (pathname ?? "").endsWith("/login/");
-  const isRegisterPage =
-    (pathname ?? "").endsWith("/register") || (pathname ?? "").endsWith("/register/");
+  const isLoginPage = pathname?.endsWith("/login");
+  const isRegisterPage = pathname?.endsWith("/register");
 
   const switchLang = (next: Lang) => {
     if (!pathname) return;
@@ -65,7 +66,7 @@ export default function Header({ isAuthenticated = false, userEmail = null }: Pr
 
   return (
     <header className="main-header bg-surface border-color">
-      <Link className="logo" href="/" onClick={() => setMobileOpen(false)}>
+      <Link className="logo" href="/" onClick={onCloseMobile}>
         <div className="logo-title text-primary">{t("brand")}</div>
         <div className="logo-subtitle text-secondary">{t("tagline")}</div>
       </Link>
@@ -93,22 +94,37 @@ export default function Header({ isAuthenticated = false, userEmail = null }: Pr
           />
 
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-        </div>
 
-        {!isAuthenticated && (
-          <div className="auth-actions">
-            {!isLoginPage && (
-              <Link className="btn btn-outline" href="/login">
-                {t("login")}
-              </Link>
-            )}
-            {!isRegisterPage && (
-              <Link className="btn btn-primary" href="/register">
-                {t("signup")}
-              </Link>
-            )}
-          </div>
-        )}
+          {!isAuthenticated ? (
+            <div className="auth-actions">
+              {!isLoginPage && (
+                <Link className="btn btn-outline" href="/login">
+                  {t("login")}
+                </Link>
+              )}
+              {!isRegisterPage && (
+                <Link className="btn btn-primary" href="/register">
+                  {t("signup")}
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div
+              className="auth-actions"
+              style={{ display: "flex", alignItems: "center", gap: 12 }}
+            >
+              {userEmail && (
+                <span className="text-secondary" style={{ fontSize: 14 }}>
+                  {userEmail}
+                </span>
+              )}
+
+              <button type="button" className="btn btn-outline logout" onClick={() => onLogout?.()}>
+                {t("logout")}
+              </button>
+            </div>
+          )}
+        </div>
 
         <BurgerButton isOpen={mobileOpen} onToggle={onToggleMobile} />
       </div>
@@ -125,6 +141,7 @@ export default function Header({ isAuthenticated = false, userEmail = null }: Pr
         onLangChange={switchLang}
         hideLogin={isLoginPage}
         hideRegister={isRegisterPage}
+        onLogout={onLogout}
       />
     </header>
   );

@@ -2,11 +2,42 @@
   "Common": {
     "appName": "Decomplex",
     "login": "Войти",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "loading": "Загрузка...",
+    "continue": "Продолжить"
   },
   "Auth": {
     "title": "Вход",
-    "email": "Email",
-    "password": "Пароль"
+    "subtitleLogin": "Войдите, чтобы продолжить",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "rememberMe": "Запомнить меня",
+    "noAccount": "Нет аккаунта?",
+    "signUp": "Создать",
+
+    "createAccount": "Создать аккаунт",
+    "subtitleRegister": "Создайте аккаунт, чтобы продолжить",
+    "accountType": "Тип аккаунта",
+    "candidate": "Кандидат",
+    "company": "Компания",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "companyName": "Название компании",
+    "haveAccount": "Уже есть аккаунт?",
+    "logIn": "Войти"
+  },
+  "header": {
+    "brand": "Вакансии",
+    "tagline": "Найдите следующую возможность",
+    "home": "Главная",
+    "profile": "Профиль",
+    "login": "Войти",
+    "signup": "Создать аккаунт",
+    "logout": "Выйти",
+    "language": "Язык",
+    "theme": {
+      "light": "Светлая тема",
+      "dark": "Тёмная тема"
+    }
   }
 }

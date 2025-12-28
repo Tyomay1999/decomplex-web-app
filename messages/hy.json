@@ -39,5 +39,40 @@
       "light": "Բաց ռեժիմ",
       "dark": "Մուգ ռեժիմ"
     }
+  },
+  "home": {
+    "heroTitle": "Գտեք Ձեր հաջորդ աշխատանքը",
+    "heroSubtitle": "Թարմ թափուր հաստիքներ վստահելի ընկերություններից",
+    "searchPlaceholder": "Փնտրել հաստիք կամ տեղանք",
+    "searchButton": "Փնտրել",
+    "sectionTitle": "Թափուր հաստիքներ",
+    "count": "{count} առաջարկ",
+    "loading": "Բեռնվում է…",
+    "loadError": "Չհաջողվեց բեռնել թափուր հաստիքները",
+    "retry": "Կրկնել",
+    "emptyTitle": "Այս պահին թափուր հաստիքներ չկան",
+    "unknownLocation": "Տեղանքը նշված չէ",
+    "posted": {
+      "minutesAgo": "{count} րոպե առաջ",
+      "hoursAgo": "{count} ժամ առաջ",
+      "daysAgo": "{count} օր առաջ"
+    }
+  },
+  "profile": {
+    "title": "Պրոֆիլ",
+    "fallbackName": "Օգտատեր",
+    "accountInfoTitle": "Հաշվի տեղեկություններ",
+    "accountTypeLabel": "Հաշվի տեսակ",
+    "emailLabel": "Էլ․ հասցե",
+    "memberSinceLabel": "Գրանցված է՝",
+    "accountTypeCandidate": "Թեկնածու",
+    "accountTypeCompany": "Ընկերություն",
+    "memberSinceValue": "{date}",
+    "applicationsTitle": "Իմ դիմումները",
+    "applicationsEmpty": "Դիմումներ դեռ չկան",
+    "appliedOn": "Դիմել է՝ {date}",
+    "statusPending": "Քննարկման փուլում",
+    "statusApproved": "Հաստատված է",
+    "statusRejected": "Մերժված է"
   }
 }

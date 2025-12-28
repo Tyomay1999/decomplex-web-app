@@ -14,7 +14,6 @@
     "rememberMe": "Remember me",
     "noAccount": "No account?",
     "signUp": "Create one",
-
     "createAccount": "Create account",
     "subtitleRegister": "Create an account to continue",
     "accountType": "Account type",
@@ -39,5 +38,40 @@
       "light": "Light mode",
       "dark": "Dark mode"
     }
+  },
+  "home": {
+    "heroTitle": "Find Your Next Job",
+    "heroSubtitle": "Latest job openings from trusted companies",
+    "searchPlaceholder": "Search by job title or location",
+    "searchButton": "Search",
+    "sectionTitle": "Job Openings",
+    "count": "{count} openings",
+    "loading": "Loading...",
+    "loadError": "Failed to load job openings",
+    "retry": "Retry",
+    "emptyTitle": "No job openings available at the moment",
+    "unknownLocation": "Location not specified",
+    "posted": {
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} hours ago",
+      "daysAgo": "{count} days ago"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "fallbackName": "User",
+    "accountInfoTitle": "Account Information",
+    "accountTypeLabel": "Account Type",
+    "emailLabel": "Email",
+    "memberSinceLabel": "Member Since",
+    "accountTypeCandidate": "Candidate",
+    "accountTypeCompany": "Company",
+    "memberSinceValue": "{date}",
+    "applicationsTitle": "My Applications",
+    "applicationsEmpty": "No applications yet",
+    "appliedOn": "Applied {date}",
+    "statusPending": "Pending Review",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected"
   }
 }

@@ -39,5 +39,40 @@
       "light": "Светлая тема",
       "dark": "Тёмная тема"
     }
+  },
+  "home": {
+    "heroTitle": "Найдите свою следующую работу",
+    "heroSubtitle": "Актуальные вакансии от проверенных компаний",
+    "searchPlaceholder": "Поиск по вакансии или локации",
+    "searchButton": "Найти",
+    "sectionTitle": "Вакансии",
+    "count": "{count} вакансий",
+    "loading": "Загрузка…",
+    "loadError": "Не удалось загрузить вакансии",
+    "retry": "Повторить",
+    "emptyTitle": "На данный момент вакансий нет",
+    "unknownLocation": "Локация не указана",
+    "posted": {
+      "minutesAgo": "{count} мин назад",
+      "hoursAgo": "{count} ч назад",
+      "daysAgo": "{count} дн назад"
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "fallbackName": "Пользователь",
+    "accountInfoTitle": "Информация об аккаунте",
+    "accountTypeLabel": "Тип аккаунта",
+    "emailLabel": "Email",
+    "memberSinceLabel": "С нами с",
+    "accountTypeCandidate": "Кандидат",
+    "accountTypeCompany": "Компания",
+    "memberSinceValue": "{date}",
+    "applicationsTitle": "Мои отклики",
+    "applicationsEmpty": "Пока нет откликов",
+    "appliedOn": "Отклик: {date}",
+    "statusPending": "На рассмотрении",
+    "statusApproved": "Одобрено",
+    "statusRejected": "Отклонено"
   }
 }

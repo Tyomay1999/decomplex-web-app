@@ -32,16 +32,25 @@ export default function Header({ isAuthenticated = false, userEmail = null, onLo
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
 
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window === "undefined") return "light";
-    return (localStorage.getItem("ui-theme") as "light" | "dark") ?? "light";
-  });
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+
+    const saved = localStorage.getItem("ui-theme");
+    if (saved === "light" || saved === "dark") {
+      setTheme(saved);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     document.body.classList.remove("light", "dark");
     document.body.classList.add(theme);
     localStorage.setItem("ui-theme", theme);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const onToggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
   const onToggleLangOpen = useCallback(() => setLangOpen((v) => !v), []);
@@ -93,7 +102,7 @@ export default function Header({ isAuthenticated = false, userEmail = null, onLo
             onChange={switchLang}
           />
 
-          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+          {mounted ? <ThemeToggle theme={theme} onToggle={onToggleTheme} /> : null}
 
           {!isAuthenticated ? (
             <div className="auth-actions">

@@ -8,10 +8,7 @@ import { getPublicVacancies } from "@/features/vacancies/server";
 import { VacancyCard } from "./components/VacancyCard";
 import { VacanciesEmptyState } from "./components/VacanciesEmptyState";
 
-function formatPostedLabel(
-    createdAtIso: string,
-    t: (key: string, values?: Record<string, any>) => string,
-): string {
+function formatPostedLabel(createdAtIso: string, t: ReturnType<typeof useTranslations>): string {
   const createdAt = new Date(createdAtIso).getTime();
   const now = Date.now();
   const diffMs = Math.max(0, now - createdAt);
@@ -29,7 +26,6 @@ function formatPostedLabel(
   const days = Math.floor(hours / 24);
   return t("posted.daysAgo", { count: days });
 }
-
 
 type UiVacancy = {
   id: string;
@@ -69,8 +65,7 @@ export function HomePage() {
         }));
 
         if (alive) setData(ui);
-      } catch (err) {
-        console.error("[HomePage] Failed to load vacancies:", err); // <-- важно
+      } catch {
         if (alive) setIsError(true);
       } finally {
         if (alive) setIsLoading(false);
@@ -95,51 +90,51 @@ export function HomePage() {
   const countLabel = t("count", { count: filtered.length });
 
   return (
-      <div className="page-content active">
-        <section className="hero">
-          <h1 className="hero-title text-primary">{t("heroTitle")}</h1>
-          <p className="hero-subtitle text-secondary">{t("heroSubtitle")}</p>
+    <div className="page-content active">
+      <section className="hero">
+        <h1 className="hero-title text-primary">{t("heroTitle")}</h1>
+        <p className="hero-subtitle text-secondary">{t("heroSubtitle")}</p>
 
-          <div className="search-container">
-            <div className="search-bar bg-surface border-color">
-              <input
-                  className="search-input text-primary"
-                  placeholder={t("searchPlaceholder")}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-              />
+        <div className="search-container">
+          <div className="search-bar bg-surface border-color">
+            <input
+              className="search-input text-primary"
+              placeholder={t("searchPlaceholder")}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
 
-              <button
-                  className="search-btn"
-                  type="button"
-                  style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
-              >
-                {t("searchButton")}
-              </button>
-            </div>
+            <button
+              className="search-btn"
+              type="button"
+              style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
+            >
+              {t("searchButton")}
+            </button>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="vacancies-section">
-          <div className="section-header">
-            <h2 className="section-title text-primary">{t("sectionTitle")}</h2>
-            <span className="vacancy-count text-secondary">{countLabel}</span>
+      <section className="vacancies-section">
+        <div className="section-header">
+          <h2 className="section-title text-primary">{t("sectionTitle")}</h2>
+          <span className="vacancy-count text-secondary">{countLabel}</span>
+        </div>
+
+        {isLoading ? (
+          <div className="text-secondary">{t("loading")}</div>
+        ) : isError ? (
+          <div className="text-secondary">{t("loadError")}</div>
+        ) : filtered.length > 0 ? (
+          <div className="vacancies-grid">
+            {filtered.map((v) => (
+              <VacancyCard key={v.id} vacancy={v} onClick={() => setSelected(v)} />
+            ))}
           </div>
-
-          {isLoading ? (
-              <div className="text-secondary">{t("loading")}</div>
-          ) : isError ? (
-              <div className="text-secondary">{t("loadError")}</div>
-          ) : filtered.length > 0 ? (
-              <div className="vacancies-grid">
-                {filtered.map((v) => (
-                    <VacancyCard key={v.id} vacancy={v} onClick={() => setSelected(v)} />
-                ))}
-              </div>
-          ) : (
-              <VacanciesEmptyState />
-          )}
-        </section>
-      </div>
+        ) : (
+          <VacanciesEmptyState />
+        )}
+      </section>
+    </div>
   );
 }

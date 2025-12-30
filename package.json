@@ -6,11 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
-    "code:quality": "npm run lint && npm run typecheck",
-    "format:all": "npm run lint && npm run typecheck && npm run format"
+    "check": "npm run lint && npm run typecheck",
+    "fix": "npm run lint:fix && npm run format"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.1",

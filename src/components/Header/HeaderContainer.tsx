@@ -1,43 +1,56 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useLogoutMutation } from "../../features/auth/authApi";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { clearSession } from "../../features/auth/authSlice";
-import { clearAuthCookies } from "../../lib/authCookies";
 
 import Header from "./Header";
+import type { Lang } from "./types";
 
-type Locale = "en" | "hy" | "ru";
+import { useAppSelector } from "../../store/hooks";
+import { useLogoutMutation, useMeQuery } from "../../features/auth/authApi";
+import { getAccessTokenFromCookie, getRefreshTokenFromCookie } from "../../lib/authCookies";
+
+function isLang(v: unknown): v is Lang {
+  return v === "en" || v === "hy" || v === "ru";
+}
 
 export default function HeaderContainer() {
   const router = useRouter();
-  const params = useParams<{ locale: string }>();
-  const locale = (params?.locale ?? "en") as Locale;
+  const params = useParams<{ locale?: string }>();
 
-  const dispatch = useAppDispatch();
-  const auth = useAppSelector((s) => s.auth);
+  const locale: Lang = useMemo(() => {
+    const l = params?.locale;
+    return isLang(l) ? l : "en";
+  }, [params?.locale]);
 
-  const isAuthenticated = Boolean(auth.accessToken);
-  const userEmail = auth.user?.email ?? null;
+  const user = useAppSelector((s) => s.auth.user);
 
-  const [logout, { isLoading }] = useLogoutMutation();
+  const hasSessionHint = useMemo(() => {
+    if (user) return true;
+    const at = getAccessTokenFromCookie();
+    const rt = getRefreshTokenFromCookie();
+    return Boolean(at || rt);
+  }, [user]);
+
+  const { isLoading } = useMeQuery(undefined, {
+    skip: !hasSessionHint,
+    refetchOnMountOrArgChange: true,
+  });
+  const [logout] = useLogoutMutation();
+
+  const isAuthenticated = Boolean(user);
 
   const onLogout = async () => {
     try {
       await logout().unwrap();
     } finally {
-      clearAuthCookies();
-      dispatch(clearSession());
-      router.push(`/${locale}/login`);
+      router.replace(`/${locale}/login`);
     }
   };
 
+  useEffect(() => {}, [isLoading]);
+
   return (
-    <Header
-      isAuthenticated={isAuthenticated}
-      userEmail={userEmail}
-      onLogout={isLoading ? undefined : onLogout}
-    />
+    <Header isAuthenticated={isAuthenticated} userEmail={user?.email ?? null} onLogout={onLogout} />
   );
 }

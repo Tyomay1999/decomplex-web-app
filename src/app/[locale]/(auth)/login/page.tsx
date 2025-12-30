@@ -12,6 +12,14 @@ import { AuthFooterLink } from "../../../../components/Auth/AuthFooterLink";
 
 type Locale = "en" | "hy" | "ru";
 
+function getAdminUrl(locale: Locale): string {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return `http://localhost:5173/${locale}`;
+  }
+
+  return `https://decomplex-admin.tyomay.dev/${locale}`;
+}
+
 export default function LoginPage() {
   const tCommon = useTranslations("Common");
   const tAuth = useTranslations("Auth");
@@ -33,8 +41,15 @@ export default function LoginPage() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     try {
-      await login({ email, password, rememberUser, language: locale }).unwrap();
+      const data = await login({ email, password, rememberUser, language: locale }).unwrap();
+
+      if (data.userType === "company") {
+        window.location.assign(getAdminUrl(locale));
+        return;
+      }
+
       router.push(`/${locale}`);
     } catch {
       // handled via errorText

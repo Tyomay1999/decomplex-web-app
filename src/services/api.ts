@@ -8,8 +8,9 @@ import {
   setAuthCookies,
   clearAuthCookies,
 } from "../lib/authCookies";
+import { getOrCreateFingerprint } from "../lib/fingerprint";
 import { clearSession, setCredentials } from "../features/auth/authSlice";
-import { UserDto } from "../features/auth/types";
+import type { UserDto } from "../features/auth/types";
 
 type ApiSuccessResponse<T> = { success: boolean; data: T };
 
@@ -20,11 +21,19 @@ type RefreshResponseData = {
   user?: UserDto;
 };
 
-function getLang(): string {
+type UiLocale = "en" | "hy" | "ru";
+type BackendLocale = "en" | "ru" | "am";
+
+function getUiLang(): UiLocale {
   if (typeof document === "undefined") return "en";
   const match = document.cookie.match(/(?:^|;\s*)(?:dc_locale|NEXT_LOCALE)=([^;]+)/);
   const v = match ? decodeURIComponent(match[1]) : "en";
   return v === "en" || v === "hy" || v === "ru" ? v : "en";
+}
+
+function mapUiToBackendLocale(ui: UiLocale): BackendLocale {
+  if (ui === "hy") return "am";
+  return ui;
 }
 
 const rawBaseQuery = fetchBaseQuery({
@@ -36,9 +45,10 @@ const rawBaseQuery = fetchBaseQuery({
     const token = state.auth.accessToken || getAccessTokenFromCookie();
     if (token) headers.set("Authorization", `Bearer ${token}`);
 
-    headers.set("Accept-Language", getLang());
+    const uiLocale = getUiLang();
+    headers.set("Accept-Language", mapUiToBackendLocale(uiLocale));
 
-    const fp = state.auth.fingerprintHash;
+    const fp = state.auth.fingerprintHash || getOrCreateFingerprint("");
     if (fp) headers.set("X-Client-Fingerprint", fp);
 
     headers.set("Content-Type", "application/json");

@@ -12,13 +12,21 @@ function toQueryString(query?: ListVacanciesQueryDto): string {
   return str ? `?${str}` : "";
 }
 
-type AnyResponse = any;
+type JsonObject = Record<string, unknown>;
+
+function isRecord(v: unknown): v is JsonObject {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+function getNested(obj: unknown, key: string): unknown {
+  if (!isRecord(obj)) return undefined;
+  return obj[key];
+}
 
 export async function getPublicVacancies(
-    baseUrl: string | undefined,
-    query?: ListVacanciesQueryDto,
+  baseUrl: string | undefined,
+  query?: ListVacanciesQueryDto,
 ): Promise<VacancyEntityDto[]> {
-  // ВАЖНО: fallback на относительный URL, чтобы работало как на скрине: /vacancies?...
   const prefix = (baseUrl ?? "").replace(/\/$/, "");
   const url = `${prefix}/vacancies${toQueryString(query)}`;
 
@@ -28,25 +36,28 @@ export async function getPublicVacancies(
     cache: "no-store",
   });
 
-  const json: AnyResponse = await res.json().catch(() => null);
+  const json: unknown = await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(
-        `GET ${url} failed: ${res.status}. body=${JSON.stringify(json)}`,
-    );
+    throw new Error(`GET ${url} failed: ${res.status}. body=${JSON.stringify(json)}`);
   }
 
-  // Устойчивое извлечение массива вакансий:
-  const vacancies =
-      json?.data?.vacancies ??
-      json?.data?.data?.vacancies ??
-      json?.vacancies ??
-      json?.data;
+  const data = getNested(json, "data");
+  const dataVacancies = getNested(data, "vacancies");
+
+  const dataData = getNested(data, "data");
+  const dataDataVacancies = getNested(dataData, "vacancies");
+
+  const topVacancies = getNested(json, "vacancies");
+
+  const fallback = data;
+
+  const candidates: unknown[] = [dataVacancies, dataDataVacancies, topVacancies, fallback];
+
+  const vacancies = candidates.find(Array.isArray);
 
   if (!Array.isArray(vacancies)) {
-    throw new Error(
-        `Unexpected response shape for ${url}: ${JSON.stringify(json)}`,
-    );
+    throw new Error(`Unexpected response shape for ${url}: ${JSON.stringify(json)}`);
   }
 
   return vacancies as VacancyEntityDto[];

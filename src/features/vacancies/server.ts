@@ -1,58 +1,64 @@
-import "server-only";
-import { env } from "../../config/env";
-import type { Locale } from "../../i18n/config";
-import type { VacancyDetails, VacancyListItem } from "./types";
+import type { ListVacanciesQueryDto, VacancyEntityDto } from "./types";
 
-type VacanciesListParams = {
-  page?: number;
-  limit?: number;
-  q?: string;
-};
+function toQueryString(query?: ListVacanciesQueryDto): string {
+  if (!query) return "";
+  const params = new URLSearchParams();
 
-function buildQuery(params: Record<string, string | number | undefined>) {
-  const sp = new URLSearchParams();
-  Object.entries(params).forEach(([k, v]) => {
-    if (v === undefined || v === "") return;
-    sp.set(k, String(v));
-  });
-  const qs = sp.toString();
-  return qs ? `?${qs}` : "";
+  if (query.companyId) params.set("companyId", query.companyId);
+  if (query.status) params.set("status", query.status);
+  if (query.jobType) params.set("jobType", query.jobType);
+
+  const str = params.toString();
+  return str ? `?${str}` : "";
 }
 
-export async function fetchVacanciesList(locale: Locale, params: VacanciesListParams = {}) {
-  const url =
-    `${env.apiBaseUrl}/public/vacancies` +
-    buildQuery({ page: params.page, limit: params.limit, q: params.q });
+type JsonObject = Record<string, unknown>;
+
+function isRecord(v: unknown): v is JsonObject {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+function getNested(obj: unknown, key: string): unknown {
+  if (!isRecord(obj)) return undefined;
+  return obj[key];
+}
+
+export async function getPublicVacancies(
+  baseUrl: string | undefined,
+  query?: ListVacanciesQueryDto,
+): Promise<VacancyEntityDto[]> {
+  const prefix = (baseUrl ?? "").replace(/\/$/, "");
+  const url = `${prefix}/vacancies${toQueryString(query)}`;
 
   const res = await fetch(url, {
     method: "GET",
-    headers: {
-      "Accept-Language": locale,
-    },
-    next: { revalidate: 60 },
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
   });
+
+  const json: unknown = await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(`Vacancies list fetch failed: ${res.status}`);
+    throw new Error(`GET ${url} failed: ${res.status}. body=${JSON.stringify(json)}`);
   }
 
-  const data = (await res.json()) as { items: VacancyListItem[] } | VacancyListItem[];
-  return Array.isArray(data) ? data : data.items;
-}
+  const data = getNested(json, "data");
+  const dataVacancies = getNested(data, "vacancies");
 
-export async function fetchVacancyBySlug(locale: Locale, slug: string) {
-  const url = `${env.apiBaseUrl}/public/vacancies/${encodeURIComponent(slug)}`;
+  const dataData = getNested(data, "data");
+  const dataDataVacancies = getNested(dataData, "vacancies");
 
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Accept-Language": locale,
-    },
-    next: { revalidate: 60 },
-  });
+  const topVacancies = getNested(json, "vacancies");
 
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`Vacancy fetch failed: ${res.status}`);
+  const fallback = data;
 
-  return (await res.json()) as VacancyDetails;
+  const candidates: unknown[] = [dataVacancies, dataDataVacancies, topVacancies, fallback];
+
+  const vacancies = candidates.find(Array.isArray);
+
+  if (!Array.isArray(vacancies)) {
+    throw new Error(`Unexpected response shape for ${url}: ${JSON.stringify(json)}`);
+  }
+
+  return vacancies as VacancyEntityDto[];
 }

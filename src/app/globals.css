@@ -8,3 +8,8 @@
 
 @import "./styles/pages/common.css";
 @import "./styles/pages/auth.css";
+
+@import "./styles/pages/public.css";
+@import "./styles/pages/profile.css";
+
+@import "./styles/components/modal.css";

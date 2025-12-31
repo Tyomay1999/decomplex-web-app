@@ -39,5 +39,68 @@
       "light": "Светлая тема",
       "dark": "Тёмная тема"
     }
+  },
+  "home": {
+    "heroTitle": "Найдите свою следующую работу",
+    "heroSubtitle": "Актуальные вакансии от проверенных компаний",
+    "searchPlaceholder": "Поиск по вакансии или локации",
+    "searchButton": "Найти",
+    "sectionTitle": "Вакансии",
+    "count": "{count} вакансий",
+    "loading": "Загрузка…",
+    "loadError": "Не удалось загрузить вакансии",
+    "retry": "Повторить",
+    "emptyTitle": "На данный момент вакансий нет",
+    "unknownLocation": "Локация не указана",
+    "posted": {
+      "minutesAgo": "{count} мин назад",
+      "hoursAgo": "{count} ч назад",
+      "daysAgo": "{count} дн назад"
+    },
+    "endReached": "Больше вакансий нет"
+  },
+  "profile": {
+    "title": "Профиль",
+    "fallbackName": "Пользователь",
+    "accountInfoTitle": "Информация об аккаунте",
+    "accountTypeLabel": "Тип аккаунта",
+    "emailLabel": "Email",
+    "memberSinceLabel": "С нами с",
+    "accountTypeCandidate": "Кандидат",
+    "accountTypeCompany": "Компания",
+    "memberSinceValue": "{date}",
+    "applicationsTitle": "Мои отклики",
+    "applicationsEmpty": "Пока нет откликов",
+    "appliedOn": "Отклик: {date}",
+    "statusPending": "На рассмотрении",
+    "statusApproved": "Одобрено",
+    "statusRejected": "Отклонено"
+  },
+  "vacancy": {
+    "loading": "Загрузка...",
+    "loadError": "Не удалось загрузить детали вакансии.",
+    "unknownLocation": "Локация не указана",
+    "back": "Назад",
+    "description": "Описание",
+    "details": "Детали",
+    "salary": "Зарплата",
+    "salaryUnknown": "Зарплата не указана",
+    "close": "Закрыть",
+    "apply": "Откликнуться",
+    "applyOnlyCandidate": "Откликаться могут только кандидаты"
+  },
+  "apply": {
+    "title": "Отклик на вакансию",
+    "subtitleFallback": "Отправьте ваш отклик",
+    "coverLetterLabel": "Сопроводительное письмо",
+    "coverLetterPlaceholder": "Напишите, почему вы подходите на эту позицию...",
+    "coverLetterHint": "Коротко опишите релевантный опыт и мотивацию.",
+    "cvLabel": "Резюме / CV",
+    "cvUploadText": "Нажмите, чтобы загрузить резюме (PDF, DOC, DOCX)",
+    "cvHint": "Загрузите актуальное резюме.",
+    "cancel": "Отмена",
+    "submit": "Отправить отклик",
+    "submitError": "Не удалось отправить отклик. Попробуйте ещё раз.",
+    "success": "Отклик успешно отправлен."
   }
 }

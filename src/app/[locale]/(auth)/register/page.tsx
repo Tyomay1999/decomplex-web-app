@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 
@@ -10,8 +10,26 @@ import { AuthPrimaryButton } from "../../../../components/Auth/AuthPrimaryButton
 import { AuthFooterLink } from "../../../../components/Auth/AuthFooterLink";
 import { AccountTypeToggle } from "../../../../components/Auth/AccountTypeToggle";
 
+import {
+  useRegisterCandidateMutation,
+  useRegisterCompanyMutation,
+} from "../../../../features/auth/authApi";
+
 type Locale = "en" | "hy" | "ru";
 type AccountType = "candidate" | "company";
+type BackendLocale = "am" | "ru" | "en";
+
+function mapUiLocaleToBackend(ui: Locale): BackendLocale {
+  if (ui === "hy") return "am";
+  return ui;
+}
+
+function getAdminUrl(): string {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return `http://localhost:5173/`;
+  }
+  return `https://decomplex-admin.tyomay.dev/`;
+}
 
 export default function RegisterPage() {
   const tCommon = useTranslations("Common");
@@ -21,7 +39,15 @@ export default function RegisterPage() {
   const params = useParams<{ locale: string }>();
   const locale = (params?.locale ?? "en") as Locale;
 
+  const backendLocale = mapUiLocaleToBackend(locale);
+
   const [accountType, setAccountType] = useState<AccountType>("candidate");
+
+  const [registerCandidate, { isLoading: isCandidateLoading, error: candidateError }] =
+    useRegisterCandidateMutation();
+
+  const [registerCompany, { isLoading: isCompanyLoading, error: companyError }] =
+    useRegisterCompanyMutation();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -30,9 +56,72 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onSubmit = (e: FormEvent) => {
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const errorText = useMemo(() => {
+    if (localError) return localError;
+
+    if (accountType === "candidate" && candidateError) {
+      return "Registration failed. Please check your data and try again.";
+    }
+    if (accountType === "company" && companyError) {
+      return "Company registration failed. Please check your data and try again.";
+    }
+    return null;
+  }, [localError, candidateError, companyError, accountType]);
+
+  const isLoading = accountType === "candidate" ? isCandidateLoading : isCompanyLoading;
+
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    router.push(`/${locale}/login`);
+    setLocalError(null);
+
+    if (!email || !password) {
+      setLocalError("Please fill email and password.");
+      return;
+    }
+
+    if (accountType === "candidate") {
+      if (!firstName || !lastName) {
+        setLocalError("Please fill first name and last name.");
+        return;
+      }
+
+      try {
+        await registerCandidate({
+          firstName,
+          lastName,
+          email,
+          password,
+          language: backendLocale,
+        }).unwrap();
+
+        router.replace(`/${locale}`);
+      } catch {
+        // handled via errorText
+      }
+
+      return;
+    }
+
+    if (!companyName) {
+      setLocalError("Please fill company name.");
+      return;
+    }
+
+    try {
+      await registerCompany({
+        name: companyName,
+        email,
+        password,
+        defaultLocale: backendLocale,
+        adminLanguage: backendLocale,
+      }).unwrap();
+
+      window.open(getAdminUrl(), "blank");
+    } catch {
+      // handled via errorText
+    }
   };
 
   return (
@@ -55,6 +144,7 @@ export default function RegisterPage() {
               onChange={setFirstName}
               placeholder="John"
               autoComplete="given-name"
+              required
             />
             <AuthField
               id="reg-lastName"
@@ -63,6 +153,7 @@ export default function RegisterPage() {
               onChange={setLastName}
               placeholder="Doe"
               autoComplete="family-name"
+              required
             />
           </div>
         ) : (
@@ -73,6 +164,7 @@ export default function RegisterPage() {
             onChange={setCompanyName}
             placeholder="Acme Corp"
             autoComplete="organization"
+            required
           />
         )}
 
@@ -98,7 +190,11 @@ export default function RegisterPage() {
           autoComplete="new-password"
         />
 
-        <AuthPrimaryButton>{tCommon("continue")}</AuthPrimaryButton>
+        {errorText ? <div style={{ color: "#EF4444", fontSize: 14 }}>{errorText}</div> : null}
+
+        <AuthPrimaryButton disabled={isLoading}>
+          {isLoading ? tCommon("loading") : tCommon("continue")}
+        </AuthPrimaryButton>
       </form>
 
       <AuthFooterLink

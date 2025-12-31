@@ -11,3 +11,5 @@
 
 @import "./styles/pages/public.css";
 @import "./styles/pages/profile.css";
+
+@import "./styles/components/modal.css";

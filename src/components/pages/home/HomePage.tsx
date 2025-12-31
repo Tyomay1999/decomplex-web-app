@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useParams, useRouter } from "next/navigation";
 
-import type { VacancyEntityDto } from "@/features/vacancies/types";
-import { getPublicVacancies } from "@/features/vacancies/server";
+import type { VacancyEntityDto, ListVacanciesQueryDto } from "@/features/vacancies/types";
+import { useLazyGetVacanciesQuery } from "@/features/vacancies/vacanciesApi";
+import { getAccessTokenFromCookie } from "@/lib/authCookies";
+import { useAppSelector } from "@/store/hooks";
+
 import { VacancyCard } from "./components/VacancyCard";
 import { VacanciesEmptyState } from "./components/VacanciesEmptyState";
 
@@ -14,14 +18,10 @@ function formatPostedLabel(createdAtIso: string, t: ReturnType<typeof useTransla
   const diffMs = Math.max(0, now - createdAt);
 
   const minutes = Math.floor(diffMs / (1000 * 60));
-  if (minutes < 60) {
-    return t("posted.minutesAgo", { count: minutes });
-  }
+  if (minutes < 60) return t("posted.minutesAgo", { count: minutes });
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) {
-    return t("posted.hoursAgo", { count: hours });
-  }
+  if (hours < 24) return t("posted.hoursAgo", { count: hours });
 
   const days = Math.floor(hours / 24);
   return t("posted.daysAgo", { count: days });
@@ -35,59 +35,172 @@ type UiVacancy = {
   postedLabel: string;
 };
 
+function useDebouncedValue<T>(value: T, delay = 400): T {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const id = window.setTimeout(() => setV(value), delay);
+    return () => window.clearTimeout(id);
+  }, [value, delay]);
+  return v;
+}
+
+type VacanciesPageData = {
+  vacancies: VacancyEntityDto[];
+  nextCursor: string | null;
+};
+
+function toVacanciesPageData(input: unknown): VacanciesPageData {
+  const obj = input as Record<string, unknown> | null;
+
+  const vacancies = Array.isArray(obj?.vacancies) ? (obj?.vacancies as VacancyEntityDto[]) : [];
+  const nextCursor =
+    typeof obj?.nextCursor === "string"
+      ? (obj?.nextCursor as string)
+      : obj?.nextCursor === null
+        ? null
+        : null;
+
+  return { vacancies, nextCursor };
+}
+
 export function HomePage() {
   const t = useTranslations("home");
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
+  const locale = (params?.locale ?? "en") as string;
 
-  const [query, setQuery] = useState<string>("");
-  const [, setSelected] = useState<UiVacancy | null>(null);
+  const authState = useAppSelector((s) => s.auth);
+  const isAuthed = Boolean(authState.accessToken || getAccessTokenFromCookie());
 
-  const [data, setData] = useState<UiVacancy[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [query, setQuery] = useState("");
+  const debouncedQ = useDebouncedValue(query.trim(), 400);
+
+  const [items, setItems] = useState<VacancyEntityDto[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isEndReached, setIsEndReached] = useState(false);
+
+  const [triggerGetVacancies] = useLazyGetVacanciesQuery();
+
+  const buildParams = (cursor?: string | null): ListVacanciesQueryDto => {
+    const base: Partial<ListVacanciesQueryDto> = {
+      status: "active",
+      limit: 20,
+    };
+
+    if (debouncedQ) {
+      (base as { q?: string }).q = debouncedQ;
+    }
+
+    if (cursor) {
+      (base as { cursor?: string }).cursor = cursor;
+    }
+
+    return base as ListVacanciesQueryDto;
+  };
+
+  const loadFirstPage = async () => {
+    setIsInitialLoading(true);
+    setIsFetching(true);
+    setIsError(false);
+    setIsEndReached(false);
+
+    const res = await triggerGetVacancies(buildParams(null), true);
+    const data = toVacanciesPageData(res.data);
+
+    if ("error" in res && res.error) {
+      setIsError(true);
+      setItems([]);
+      setNextCursor(null);
+      setIsEndReached(true);
+    } else {
+      setItems(data.vacancies);
+      setNextCursor(data.nextCursor);
+      setIsEndReached(!data.nextCursor || data.vacancies.length === 0);
+    }
+
+    setIsFetching(false);
+    setIsInitialLoading(false);
+  };
+
+  const loadMore = async () => {
+    if (isFetching) return;
+    if (isEndReached) return;
+
+    setIsFetching(true);
+    setIsError(false);
+
+    const res = await triggerGetVacancies(buildParams(nextCursor), true);
+    const data = toVacanciesPageData(res.data);
+
+    if ("error" in res && res.error) {
+      setIsError(true);
+      setIsEndReached(true);
+      setIsFetching(false);
+      return;
+    }
+
+    setItems((prev) => {
+      const seen = new Set(prev.map((v) => v.id));
+      const merged = [...prev];
+      for (const v of data.vacancies) {
+        if (!seen.has(v.id)) merged.push(v);
+      }
+      return merged;
+    });
+
+    setNextCursor(data.nextCursor);
+    setIsEndReached(!data.nextCursor || data.vacancies.length === 0);
+    setIsFetching(false);
+  };
 
   useEffect(() => {
-    let alive = true;
+    void loadFirstPage();
+  }, [debouncedQ, locale]);
 
-    (async () => {
-      try {
-        setIsLoading(true);
-        setIsError(false);
+  const uiData: UiVacancy[] = useMemo(() => {
+    return items.map((v) => ({
+      id: v.id,
+      title: v.title,
+      companyId: v.companyId,
+      location: v.location ?? t("unknownLocation"),
+      postedLabel: formatPostedLabel(v.createdAt, t),
+    }));
+  }, [items, t]);
 
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const vacancies = await getPublicVacancies(baseUrl, { status: "active" });
+  const countLabel = t("count", { count: uiData.length });
 
-        const ui = vacancies.map((v: VacancyEntityDto) => ({
-          id: v.id,
-          title: v.title,
-          companyId: v.companyId,
-          location: v.location ?? t("unknownLocation"),
-          postedLabel: formatPostedLabel(v.createdAt, t),
-        }));
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-        if (alive) setData(ui);
-      } catch {
-        if (alive) setIsError(true);
-      } finally {
-        if (alive) setIsLoading(false);
-      }
-    })();
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
 
-    return () => {
-      alive = false;
-    };
-  }, [t]);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (!first?.isIntersecting) return;
+        void loadMore();
+      },
+      { root: null, rootMargin: "200px", threshold: 0.01 },
+    );
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return data;
+    io.observe(el);
+    return () => io.disconnect();
+  }, [sentinelRef, isEndReached, isFetching, nextCursor]);
 
-    return data.filter((v) => {
-      const text = `${v.title} ${v.companyId} ${v.location}`.toLowerCase();
-      return text.includes(q);
-    });
-  }, [query, data]);
+  const onVacancyClick = (id: string) => {
+    const detailUrl = `/${locale}/vacancies/${id}`;
 
-  const countLabel = t("count", { count: filtered.length });
+    if (!isAuthed) {
+      router.push(`/${locale}/login?redirect=${encodeURIComponent(detailUrl)}`);
+      return;
+    }
+
+    router.push(detailUrl);
+  };
 
   return (
     <div className="page-content active">
@@ -121,16 +234,27 @@ export function HomePage() {
           <span className="vacancy-count text-secondary">{countLabel}</span>
         </div>
 
-        {isLoading ? (
+        {isInitialLoading ? (
           <div className="text-secondary">{t("loading")}</div>
         ) : isError ? (
           <div className="text-secondary">{t("loadError")}</div>
-        ) : filtered.length > 0 ? (
-          <div className="vacancies-grid">
-            {filtered.map((v) => (
-              <VacancyCard key={v.id} vacancy={v} onClick={() => setSelected(v)} />
-            ))}
-          </div>
+        ) : uiData.length > 0 ? (
+          <>
+            <div className="vacancies-grid">
+              {uiData.map((v) => (
+                <VacancyCard key={v.id} vacancy={v} onClick={() => onVacancyClick(v.id)} />
+              ))}
+            </div>
+
+            <div ref={sentinelRef} style={{ height: 1 }} />
+
+            {isFetching ? <div className="text-secondary">{t("loading")}</div> : null}
+            {isEndReached ? (
+              <div className="text-secondary" style={{ paddingTop: 10 }}>
+                {t("endReached")}
+              </div>
+            ) : null}
+          </>
         ) : (
           <VacanciesEmptyState />
         )}

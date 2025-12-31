@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams, useParams, useRouter } from "next/navigation";
 
 import { useLoginMutation } from "../../../../features/auth/authApi";
 import { AuthCard } from "../../../../components/Auth/AuthCard";
@@ -12,12 +12,12 @@ import { AuthFooterLink } from "../../../../components/Auth/AuthFooterLink";
 
 type Locale = "en" | "hy" | "ru";
 
-function getAdminUrl(locale: Locale): string {
+function getAdminUrl(): string {
   if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    return `http://localhost:5173/${locale}`;
+    return `http://localhost:5173/`;
   }
 
-  return `https://decomplex-admin.tyomay.dev/${locale}`;
+  return `https://decomplex-admin.tyomay.dev/`;
 }
 
 export default function LoginPage() {
@@ -27,6 +27,9 @@ export default function LoginPage() {
   const router = useRouter();
   const params = useParams<{ locale: string }>();
   const locale = (params?.locale ?? "en") as Locale;
+
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
 
   const [login, { isLoading, error }] = useLoginMutation();
 
@@ -46,11 +49,11 @@ export default function LoginPage() {
       const data = await login({ email, password, rememberUser, language: locale }).unwrap();
 
       if (data.userType === "company") {
-        window.location.assign(getAdminUrl(locale));
+        window.location.assign(getAdminUrl());
         return;
       }
 
-      router.push(`/${locale}`);
+      router.replace(redirectTo ?? `/${locale}`);
     } catch {
       // handled via errorText
     }

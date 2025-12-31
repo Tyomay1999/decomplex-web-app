@@ -24,11 +24,11 @@ function mapUiLocaleToBackend(ui: Locale): BackendLocale {
   return ui;
 }
 
-function getAdminUrl(locale: Locale): string {
+function getAdminUrl(): string {
   if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    return `http://localhost:5173/${locale}`;
+    return `http://localhost:5173/`;
   }
-  return `https://decomplex-admin.tyomay.dev/${locale}`;
+  return `https://decomplex-admin.tyomay.dev/`;
 }
 
 export default function RegisterPage() {
@@ -118,7 +118,7 @@ export default function RegisterPage() {
         adminLanguage: backendLocale,
       }).unwrap();
 
-      window.location.assign(getAdminUrl(locale));
+      window.open(getAdminUrl(), "blank");
     } catch {
       // handled via errorText
     }

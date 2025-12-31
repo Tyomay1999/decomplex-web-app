@@ -56,7 +56,8 @@
       "minutesAgo": "{count} րոպե առաջ",
       "hoursAgo": "{count} ժամ առաջ",
       "daysAgo": "{count} օր առաջ"
-    }
+    },
+    "endReached": "Այլ թափուր տեղեր չկան"
   },
   "profile": {
     "title": "Պրոֆիլ",
@@ -74,5 +75,32 @@
     "statusPending": "Քննարկման փուլում",
     "statusApproved": "Հաստատված է",
     "statusRejected": "Մերժված է"
+  },
+  "vacancy": {
+    "loading": "Բեռնվում է...",
+    "loadError": "Չհաջողվեց բեռնել թափուր տեղի մանրամասները։",
+    "unknownLocation": "Վայրը նշված չէ",
+    "back": "Հետ",
+    "description": "Նկարագրություն",
+    "details": "Մանրամասներ",
+    "salary": "Աշխատավարձ",
+    "salaryUnknown": "Աշխատավարձը նշված չէ",
+    "close": "Փակել",
+    "apply": "Դիմել",
+    "applyOnlyCandidate": "Դիմել կարող են միայն թեկնածուները"
+  },
+  "apply": {
+    "title": "Դիմում թափուր տեղին",
+    "subtitleFallback": "Ուղարկեք ձեր դիմումը",
+    "coverLetterLabel": "Ուղեկցող նամակ",
+    "coverLetterPlaceholder": "Գրեք, թե ինչու եք համապատասխանում այս դիրքին...",
+    "coverLetterHint": "Նկարագրեք համապատասխան փորձը և մոտիվացիան։",
+    "cvLabel": "Ռեզյումե / CV",
+    "cvUploadText": "Սեղմեք՝ ռեզյումեն վերբեռնելու համար (PDF, DOC, DOCX)",
+    "cvHint": "Վերբեռնեք ձեր արդի ռեզյումեն։",
+    "cancel": "Չեղարկել",
+    "submit": "Ուղարկել դիմումը",
+    "submitError": "Չհաջողվեց ուղարկել դիմումը։ Փորձեք կրկին։",
+    "success": "Դիմումը հաջողությամբ ուղարկվեց։"
   }
 }

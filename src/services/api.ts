@@ -51,7 +51,6 @@ const rawBaseQuery = fetchBaseQuery({
     const fp = state.auth.fingerprintHash || getOrCreateFingerprint("");
     if (fp) headers.set("X-Client-Fingerprint", fp);
 
-    headers.set("Content-Type", "application/json");
     return headers;
   },
 });

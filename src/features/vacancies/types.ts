@@ -16,15 +16,21 @@ export type VacancyEntityDto = {
   updatedAt: string;
 };
 
-export type ListVacanciesResponseDto = {
-  success: true;
-  data: {
-    vacancies: VacancyEntityDto[];
-  };
-};
-
 export type ListVacanciesQueryDto = {
   companyId?: string;
   status?: VacancyStatus;
   jobType?: VacancyJobType;
+  limit: number;
+  cursor?: string;
 };
+
+export type ApiSuccess<T> = { success: boolean; data: T };
+
+export type VacanciesPageDto = {
+  nextCursor: string | null;
+  vacancies: VacancyEntityDto[];
+};
+
+export type ListVacanciesResponseDto = ApiSuccess<VacanciesPageDto>;
+
+export type GetVacancyByIdResponseDto = ApiSuccess<{ vacancy: VacancyEntityDto }>;

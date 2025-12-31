@@ -50,12 +50,13 @@
     "loadError": "Failed to load job openings",
     "retry": "Retry",
     "emptyTitle": "No job openings available at the moment",
-    "unknownLocation": "Location not specified",
     "posted": {
       "minutesAgo": "{count} min ago",
       "hoursAgo": "{count} hours ago",
       "daysAgo": "{count} days ago"
-    }
+    },
+    "unknownLocation": "Location not specified",
+    "endReached": "No more vacancies"
   },
   "profile": {
     "title": "Profile",
@@ -73,5 +74,32 @@
     "statusPending": "Pending Review",
     "statusApproved": "Approved",
     "statusRejected": "Rejected"
+  },
+  "vacancy": {
+    "loading": "Loading...",
+    "loadError": "Failed to load vacancy details.",
+    "unknownLocation": "Location not specified",
+    "back": "Back",
+    "description": "Description",
+    "details": "Details",
+    "salary": "Salary",
+    "salaryUnknown": "Salary not specified",
+    "close": "Close",
+    "apply": "Apply",
+    "applyOnlyCandidate": "Only candidates can apply"
+  },
+  "apply": {
+    "title": "Apply for Position",
+    "subtitleFallback": "Send your application",
+    "coverLetterLabel": "Cover Letter",
+    "coverLetterPlaceholder": "Tell us why you're a great fit for this position...",
+    "coverLetterHint": "Share your relevant experience and why you're interested.",
+    "cvLabel": "Resume / CV",
+    "cvUploadText": "Click to upload your resume (PDF, DOC, DOCX)",
+    "cvHint": "Upload your latest resume.",
+    "cancel": "Cancel",
+    "submit": "Submit Application",
+    "submitError": "Failed to submit application. Please try again.",
+    "success": "Application submitted successfully."
   }
 }

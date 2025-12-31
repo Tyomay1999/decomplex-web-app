@@ -56,7 +56,8 @@
       "minutesAgo": "{count} мин назад",
       "hoursAgo": "{count} ч назад",
       "daysAgo": "{count} дн назад"
-    }
+    },
+    "endReached": "Больше вакансий нет"
   },
   "profile": {
     "title": "Профиль",
@@ -74,5 +75,32 @@
     "statusPending": "На рассмотрении",
     "statusApproved": "Одобрено",
     "statusRejected": "Отклонено"
+  },
+  "vacancy": {
+    "loading": "Загрузка...",
+    "loadError": "Не удалось загрузить детали вакансии.",
+    "unknownLocation": "Локация не указана",
+    "back": "Назад",
+    "description": "Описание",
+    "details": "Детали",
+    "salary": "Зарплата",
+    "salaryUnknown": "Зарплата не указана",
+    "close": "Закрыть",
+    "apply": "Откликнуться",
+    "applyOnlyCandidate": "Откликаться могут только кандидаты"
+  },
+  "apply": {
+    "title": "Отклик на вакансию",
+    "subtitleFallback": "Отправьте ваш отклик",
+    "coverLetterLabel": "Сопроводительное письмо",
+    "coverLetterPlaceholder": "Напишите, почему вы подходите на эту позицию...",
+    "coverLetterHint": "Коротко опишите релевантный опыт и мотивацию.",
+    "cvLabel": "Резюме / CV",
+    "cvUploadText": "Нажмите, чтобы загрузить резюме (PDF, DOC, DOCX)",
+    "cvHint": "Загрузите актуальное резюме.",
+    "cancel": "Отмена",
+    "submit": "Отправить отклик",
+    "submitError": "Не удалось отправить отклик. Попробуйте ещё раз.",
+    "success": "Отклик успешно отправлен."
   }
 }

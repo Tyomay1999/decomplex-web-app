@@ -59,23 +59,6 @@
     },
     "endReached": "Այլ թափուր տեղեր չկան"
   },
-  "profile": {
-    "title": "Պրոֆիլ",
-    "fallbackName": "Օգտատեր",
-    "accountInfoTitle": "Հաշվի տեղեկություններ",
-    "accountTypeLabel": "Հաշվի տեսակ",
-    "emailLabel": "Էլ․ հասցե",
-    "memberSinceLabel": "Գրանցված է՝",
-    "accountTypeCandidate": "Թեկնածու",
-    "accountTypeCompany": "Ընկերություն",
-    "memberSinceValue": "{date}",
-    "applicationsTitle": "Իմ դիմումները",
-    "applicationsEmpty": "Դիմումներ դեռ չկան",
-    "appliedOn": "Դիմել է՝ {date}",
-    "statusPending": "Քննարկման փուլում",
-    "statusApproved": "Հաստատված է",
-    "statusRejected": "Մերժված է"
-  },
   "vacancy": {
     "loading": "Բեռնվում է...",
     "loadError": "Չհաջողվեց բեռնել թափուր տեղի մանրամասները։",
@@ -102,5 +85,45 @@
     "submit": "Ուղարկել դիմումը",
     "submitError": "Չհաջողվեց ուղարկել դիմումը։ Փորձեք կրկին։",
     "success": "Դիմումը հաջողությամբ ուղարկվեց։"
+  },
+  "profile": {
+    "title": "Պրոֆիլ",
+    "fallbackName": "Օգտատեր",
+    "accountTypeLabel": "Հաշվի տեսակը",
+    "accountTypeCandidate": "Թեկնածու",
+    "accountTypeCompany": "Ընկերություն",
+    "emailLabel": "Էլ․ փոստ",
+    "memberSinceLabel": "Գրանցման ամսաթիվը",
+    "memberSinceValue": "{date}",
+    "memberSinceUnknown": "—",
+
+    "accountInfoTitle": "Հաշվի տվյալներ",
+
+    "applicationsTitle": "Իմ դիմումները",
+    "applicationsEmpty": "Դուք դեռ չեք դիմել որևէ вакансիայի։",
+    "applicationsSearchPlaceholder": "Որոնում դիմած вакансիաների մեջ…",
+
+    "appliedOn": "Դիմել է՝ {date}",
+
+    "loadMore": "Ցույց տալ ավելին",
+    "loading": "Բեռնվում է…",
+    "retry": "Կրկնել",
+
+    "statusApplied": "Դիմումը ուղարկված է",
+    "statusPending": "Սպասման մեջ է",
+    "statusReviewing": "Քննարկման փուլում",
+    "statusApproved": "Հաստատված է",
+    "statusRejected": "Մերժված է",
+    "statusAccepted": "Ընդունված է",
+    "statusCanceled": "Չեղարկված է",
+    "statusWithdrawn": "Հետ կանչված է",
+    "statusUnknown": "Անհայտ",
+    "valueUnknown": "—",
+
+    "filterAll": "Բոլորը",
+    "filterReset": "Վերակայել",
+    "filterLocation": "Տեղակայություն",
+    "filterJobType": "Աշխատանքի տեսակ",
+    "filterStatus": "Կարգավիճակ"
   }
 }

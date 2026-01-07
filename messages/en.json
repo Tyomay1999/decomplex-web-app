@@ -58,23 +58,7 @@
     "unknownLocation": "Location not specified",
     "endReached": "No more vacancies"
   },
-  "profile": {
-    "title": "Profile",
-    "fallbackName": "User",
-    "accountInfoTitle": "Account Information",
-    "accountTypeLabel": "Account Type",
-    "emailLabel": "Email",
-    "memberSinceLabel": "Member Since",
-    "accountTypeCandidate": "Candidate",
-    "accountTypeCompany": "Company",
-    "memberSinceValue": "{date}",
-    "applicationsTitle": "My Applications",
-    "applicationsEmpty": "No applications yet",
-    "appliedOn": "Applied {date}",
-    "statusPending": "Pending Review",
-    "statusApproved": "Approved",
-    "statusRejected": "Rejected"
-  },
+
   "vacancy": {
     "loading": "Loading...",
     "loadError": "Failed to load vacancy details.",
@@ -101,5 +85,45 @@
     "submit": "Submit Application",
     "submitError": "Failed to submit application. Please try again.",
     "success": "Application submitted successfully."
+  },
+  "profile": {
+    "title": "Profile",
+    "fallbackName": "User",
+    "accountTypeLabel": "Account type",
+    "accountTypeCandidate": "Candidate",
+    "accountTypeCompany": "Company",
+    "emailLabel": "Email",
+    "memberSinceLabel": "Member since",
+    "memberSinceValue": "{date}",
+    "memberSinceUnknown": "—",
+
+    "accountInfoTitle": "Account information",
+
+    "applicationsTitle": "My applications",
+    "applicationsEmpty": "You haven’t applied to any vacancies yet.",
+    "applicationsSearchPlaceholder": "Search applied vacancies…",
+
+    "appliedOn": "Applied on {date}",
+
+    "loadMore": "Load more",
+    "loading": "Loading…",
+    "retry": "Try again",
+
+    "statusApplied": "Applied",
+    "statusPending": "Pending",
+    "statusReviewing": "In review",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "statusAccepted": "Accepted",
+    "statusCanceled": "Canceled",
+    "statusWithdrawn": "Withdrawn",
+    "statusUnknown": "Unknown",
+    "valueUnknown": "—",
+
+    "filterAll": "All",
+    "filterReset": "Reset",
+    "filterLocation": "Location",
+    "filterJobType": "Job type",
+    "filterStatus": "Status"
   }
 }

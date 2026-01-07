@@ -48,6 +48,7 @@ export const vacanciesApi = api.injectEndpoints({
 
 export const {
   useGetVacanciesQuery,
+  useLazyGetVacancyByIdQuery,
   useLazyGetVacanciesQuery,
   useGetVacancyByIdQuery,
   useApplyToVacancyMutation,

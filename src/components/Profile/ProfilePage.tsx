@@ -5,56 +5,87 @@ import { useTranslations } from "next-intl";
 
 import { ProfileInfoCard } from "./components/ProfileInfoCard";
 import { ProfileApplicationsCard } from "./components/ProfileApplicationsCard";
-import { mockProfile, mockApplications } from "./mock";
+import { useMyApplicationsInfinite } from "@/features/applications/hooks/useMyApplicationsInfinite";
+import { useCurrentQuery } from "@/features/auth/authApi";
+import { useAppSelector } from "@/store/hooks";
 
-export type ApplicationStatus = "pending" | "approved" | "rejected";
+type UserLike = Record<string, unknown>;
 
-export type ApplicationMock = {
-  id: string;
-  vacancyTitle: string;
-  companyName: string;
-  appliedDate: string;
-  status: ApplicationStatus;
-};
-
-export type ProfileMock = {
-  firstName?: string | null;
-  lastName?: string | null;
+type UiProfile = {
+  fullName: string;
   email: string;
   userType: "candidate" | "company";
-  memberSince: string;
+  memberSince: string | null;
 };
+
+function isRecord(v: unknown): v is UserLike {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+function getStr(obj: unknown, key: string): string | null {
+  if (!isRecord(obj)) return null;
+  const v = obj[key];
+  return typeof v === "string" && v.trim() ? v : null;
+}
+
+function buildUiProfile(primary: unknown, fallback: unknown, fallbackName: string): UiProfile {
+  const firstName = getStr(primary, "firstName") ?? getStr(fallback, "firstName");
+  const lastName = getStr(primary, "lastName") ?? getStr(fallback, "lastName");
+
+  const nameFromSingle = getStr(primary, "name") ?? getStr(fallback, "name");
+
+  const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim() || nameFromSingle || fallbackName;
+
+  const email = getStr(primary, "email") ?? getStr(fallback, "email") ?? "";
+
+  const userTypeRaw = getStr(primary, "userType") ?? getStr(fallback, "userType");
+  const userType: UiProfile["userType"] = userTypeRaw === "company" ? "company" : "candidate";
+
+  const memberSince =
+    getStr(primary, "createdAt") ??
+    getStr(fallback, "createdAt") ??
+    getStr(primary, "registeredAt") ??
+    getStr(fallback, "registeredAt") ??
+    null;
+
+  return { fullName, email, userType, memberSince };
+}
 
 export function ProfilePage() {
   const t = useTranslations("profile");
 
-  const profile = mockProfile;
-  const applications = mockApplications;
+  const { data } = useCurrentQuery();
+  const authUser = useAppSelector((s) => s.auth.user);
 
-  const fullName = useMemo(() => {
-    const name = `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim();
-    return name || t("fallbackName");
-  }, [profile.firstName, profile.lastName, t]);
+  const profile = useMemo(
+    () => buildUiProfile(data?.user, authUser, t("fallbackName")),
+    [data?.user, authUser, t],
+  );
 
-  const avatarText = profile.userType === "company" ? "🏢" : "👤";
+  const { items, isLoading, isError, hasMore, loadMore, refetch, isFetching } =
+    useMyApplicationsInfinite({ limit: 20 });
+
+  const memberSinceLabel = profile.memberSince
+    ? t("memberSinceValue", {
+        date: new Date(profile.memberSince).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+        }),
+      })
+    : t("memberSinceUnknown");
 
   return (
     <div className="page-content active">
       <div className="profile-container">
         <ProfileInfoCard
           title={t("title")}
-          avatarText={avatarText}
-          fullName={fullName}
-          email={profile.email}
+          avatarText={profile.userType === "company" ? "🏢" : "👤"}
+          fullName={profile.fullName}
+          email={profile.email || t("valueUnknown")}
           accountTypeLabel={
             profile.userType === "candidate" ? t("accountTypeCandidate") : t("accountTypeCompany")
           }
-          memberSinceLabel={t("memberSinceValue", {
-            date: new Date(profile.memberSince).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-            }),
-          })}
+          memberSinceLabel={memberSinceLabel}
           labels={{
             accountType: t("accountTypeLabel"),
             email: t("emailLabel"),
@@ -66,11 +97,33 @@ export function ProfilePage() {
         <ProfileApplicationsCard
           title={t("applicationsTitle")}
           emptyText={t("applicationsEmpty")}
-          applications={applications}
+          applications={items}
+          isLoading={isLoading}
+          isError={isError}
+          isFetchingMore={isFetching && items.length > 0}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          onRetry={refetch}
+          labels={{
+            searchPlaceholder: t("applicationsSearchPlaceholder"),
+            loadMore: t("loadMore"),
+            loading: t("loading"),
+            retry: t("retry"),
+            filterAll: t("filterAll"),
+            filterReset: t("filterReset"),
+            filterLocation: t("filterLocation"),
+            filterJobType: t("filterJobType"),
+          }}
           statusLabels={{
+            applied: t("statusApplied"),
             pending: t("statusPending"),
+            reviewing: t("statusReviewing"),
             approved: t("statusApproved"),
             rejected: t("statusRejected"),
+            accepted: t("statusAccepted"),
+            canceled: t("statusCanceled"),
+            withdrawn: t("statusWithdrawn"),
+            unknown: t("statusUnknown"),
           }}
           appliedLabel={(dateStr) => t("appliedOn", { date: dateStr })}
         />

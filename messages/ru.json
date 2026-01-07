@@ -59,23 +59,6 @@
     },
     "endReached": "Больше вакансий нет"
   },
-  "profile": {
-    "title": "Профиль",
-    "fallbackName": "Пользователь",
-    "accountInfoTitle": "Информация об аккаунте",
-    "accountTypeLabel": "Тип аккаунта",
-    "emailLabel": "Email",
-    "memberSinceLabel": "С нами с",
-    "accountTypeCandidate": "Кандидат",
-    "accountTypeCompany": "Компания",
-    "memberSinceValue": "{date}",
-    "applicationsTitle": "Мои отклики",
-    "applicationsEmpty": "Пока нет откликов",
-    "appliedOn": "Отклик: {date}",
-    "statusPending": "На рассмотрении",
-    "statusApproved": "Одобрено",
-    "statusRejected": "Отклонено"
-  },
   "vacancy": {
     "loading": "Загрузка...",
     "loadError": "Не удалось загрузить детали вакансии.",
@@ -102,5 +85,45 @@
     "submit": "Отправить отклик",
     "submitError": "Не удалось отправить отклик. Попробуйте ещё раз.",
     "success": "Отклик успешно отправлен."
+  },
+  "profile": {
+    "title": "Профиль",
+    "fallbackName": "Пользователь",
+    "accountTypeLabel": "Тип аккаунта",
+    "accountTypeCandidate": "Кандидат",
+    "accountTypeCompany": "Компания",
+    "emailLabel": "Email",
+    "memberSinceLabel": "С нами с",
+    "memberSinceValue": "{date}",
+    "memberSinceUnknown": "—",
+
+    "accountInfoTitle": "Информация об аккаунте",
+
+    "applicationsTitle": "Мои отклики",
+    "applicationsEmpty": "Вы ещё не откликались на вакансии.",
+    "applicationsSearchPlaceholder": "Поиск по откликнувшим вакансиям…",
+
+    "appliedOn": "Отклик от {date}",
+
+    "loadMore": "Показать ещё",
+    "loading": "Загрузка…",
+    "retry": "Повторить",
+
+    "statusApplied": "Отклик отправлен",
+    "statusPending": "Ожидает",
+    "statusReviewing": "На рассмотрении",
+    "statusApproved": "Одобрено",
+    "statusRejected": "Отклонено",
+    "statusAccepted": "Принято",
+    "statusCanceled": "Отменено",
+    "statusWithdrawn": "Отозвано",
+    "statusUnknown": "Неизвестно",
+    "valueUnknown": "—",
+
+    "filterAll": "Все",
+    "filterReset": "Сбросить",
+    "filterLocation": "Локация",
+    "filterJobType": "Тип занятости",
+    "filterStatus": "Статус"
   }
 }

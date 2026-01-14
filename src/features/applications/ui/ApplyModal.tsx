@@ -1,8 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import type { MouseEvent } from "react";
 import { useTranslations } from "next-intl";
-import { useApplyToVacancyMutation } from "@/features/vacancies/vacanciesApi";
+import { useApplyToVacancyMutation } from "@/features/vacancies";
+import { useAppDispatch } from "../../../store/hooks";
+import { pushToast } from "../../notifications/notificationsSlice";
 
 type Props = {
   isOpen: boolean;
@@ -13,18 +16,14 @@ type Props = {
 
 export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) {
   const t = useTranslations("apply");
-
+  const dispatch = useAppDispatch();
   const [coverLetter, setCoverLetter] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
-  const [apply, { isLoading, error, isSuccess }] = useApplyToVacancyMutation();
+  const [apply, { isLoading }] = useApplyToVacancyMutation();
 
-  const errorText = useMemo(() => {
-    if (!error) return null;
-    return t("submitError");
-  }, [error, t]);
-
-  const onOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (isLoading) return null;
     if ((e.target as HTMLElement).classList.contains("modal-overlay")) onClose();
   };
 
@@ -33,9 +32,10 @@ export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) 
 
     try {
       await apply({ vacancyId, file, coverLetter: coverLetter.trim() || undefined }).unwrap();
+      dispatch(pushToast({ kind: "success", message: t("successToast") }));
       onClose();
     } catch {
-      // handled by errorText
+      // handled by notifications
     }
   };
 
@@ -54,7 +54,12 @@ export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) 
             </p>
           </div>
 
-          <button className="modal-close text-secondary" onClick={onClose} type="button">
+          <button
+            type="button"
+            className="modal-close text-secondary"
+            disabled={isLoading}
+            onClick={onClose}
+          >
             ×
           </button>
         </div>
@@ -105,6 +110,7 @@ export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) 
                     </span>
                     <button
                       type="button"
+                      disabled={isLoading}
                       className="file-remove text-secondary"
                       onClick={onRemoveFile}
                     >
@@ -116,9 +122,6 @@ export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) 
 
               <span className="form-hint text-secondary">{t("cvHint")}</span>
             </div>
-
-            {errorText ? <div style={{ color: "#EF4444", fontSize: 14 }}>{errorText}</div> : null}
-            {isSuccess ? <div className="text-secondary">{t("success")}</div> : null}
           </form>
         </div>
 
@@ -126,13 +129,14 @@ export function ApplyModal({ isOpen, onClose, vacancyId, vacancyTitle }: Props) 
           <button
             className="btn btn-outline border-color text-primary"
             onClick={onClose}
+            disabled={isLoading}
             type="button"
           >
             {t("cancel")}
           </button>
 
           <button
-            className="btn"
+            className="btn btn-primary"
             style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
             onClick={onSubmit}
             type="button"

@@ -1,0 +1,158 @@
+.vacancy-details-skeleton {
+  width: 100%;
+  max-width: 900px;
+  border-radius: 18px;
+  border-width: 1px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vacancy-details-skeleton .sk-line,
+.vacancy-details-skeleton .sk-chip {
+  background: rgba(120, 120, 120, 0.18);
+  border-radius: 10px;
+  opacity: 0.95;
+}
+
+.vds__header {
+  position: relative;
+  padding-right: 44px;
+}
+
+.vds__title {
+  height: 22px;
+  width: 62%;
+}
+
+.vds__meta {
+  height: 14px;
+  width: 42%;
+  margin-top: 10px;
+}
+
+.vds__back {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+}
+
+.vds__divider {
+  margin: 18px 0;
+  border-top: 1px solid;
+}
+
+.vds__body {
+  padding: 2px 0;
+}
+
+.vds__section-title {
+  height: 14px;
+  width: 120px;
+}
+
+.vds__para {
+  margin-top: 14px;
+}
+
+.vds__line-1 {
+  height: 12px;
+  width: 92%;
+  margin-top: 10px;
+}
+.vds__line-2 {
+  height: 12px;
+  width: 88%;
+  margin-top: 10px;
+}
+.vds__line-3 {
+  height: 12px;
+  width: 84%;
+  margin-top: 10px;
+}
+.vds__line-4 {
+  height: 12px;
+  width: 76%;
+  margin-top: 10px;
+}
+
+.vds__grid {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.vds__row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.vds__label {
+  height: 12px;
+  width: 140px;
+}
+
+.vds__value {
+  height: 12px;
+  width: 240px;
+  max-width: 55%;
+}
+
+.vds__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.vds__btn {
+  height: 40px;
+  width: 120px;
+  border-radius: 14px;
+}
+
+.vds__btn-primary {
+  width: 140px;
+}
+
+.vds__shimmer {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  animation: vds-shimmer 1.1s infinite;
+  pointer-events: none;
+}
+
+@keyframes vds-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vds__shimmer {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .vacancy-details-skeleton {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .vds__title {
+    width: 82%;
+  }
+  .vds__meta {
+    width: 62%;
+  }
+  .vds__label {
+    width: 110px;
+  }
+}

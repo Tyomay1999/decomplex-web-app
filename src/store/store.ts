@@ -1,13 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { api } from "../services/api";
-import authReducer from "../features/auth/authSlice";
+
+import authReducer from "@/features/auth/authSlice";
+import notificationsReducer from "@/features/notifications/notificationsSlice";
+import { api } from "@/services/api";
+import { rtkQueryErrorToastMiddleware } from "@/store/rtkQueryErrorToastMiddleware";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     auth: authReducer,
+    notifications: notificationsReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: true,
+      immutableCheck: true,
+      serializableCheck: true,
+    }).concat(api.middleware, rtkQueryErrorToastMiddleware),
   devTools: process.env.NODE_ENV !== "production",
 });
 

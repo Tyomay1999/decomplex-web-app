@@ -24,7 +24,23 @@
     "lastName": "Фамилия",
     "companyName": "Название компании",
     "haveAccount": "Уже есть аккаунт?",
-    "logIn": "Войти"
+    "logIn": "Войти",
+
+    "placeholders": {
+      "email": "you@example.com",
+      "password": "••••••••",
+      "firstName": "Иван",
+      "lastName": "Иванов",
+      "companyName": "ООО Ромашка"
+    },
+    "errors": {
+      "loginFailed": "Ошибка входа. Проверьте данные и попробуйте снова.",
+      "registerFailed": "Ошибка регистрации. Проверьте данные и попробуйте снова.",
+      "companyRegisterFailed": "Ошибка регистрации компании. Проверьте данные и попробуйте снова.",
+      "fillEmailPassword": "Пожалуйста, заполните email и пароль.",
+      "fillFirstLastName": "Пожалуйста, заполните имя и фамилию.",
+      "fillCompanyName": "Пожалуйста, укажите название компании."
+    }
   },
   "header": {
     "brand": "Вакансии",
@@ -35,9 +51,17 @@
     "signup": "Создать аккаунт",
     "logout": "Выйти",
     "language": "Язык",
+    "menu": "Меню",
     "theme": {
+      "label": "Переключить тему",
       "light": "Светлая тема",
       "dark": "Тёмная тема"
+    },
+    "logoutConfirm": {
+      "title": "Выйти из аккаунта?",
+      "description": "Чтобы снова получить доступ, нужно будет войти заново.",
+      "cancel": "Отмена",
+      "confirm": "Выйти"
     }
   },
   "home": {
@@ -52,6 +76,9 @@
     "retry": "Повторить",
     "emptyTitle": "На данный момент вакансий нет",
     "unknownLocation": "Локация не указана",
+    "loadErrorTitle": "Не удалось загрузить вакансии",
+    "loadErrorBody": "Проверьте подключение к интернету и попробуйте ещё раз.",
+    "reload": "Обновить",
     "posted": {
       "minutesAgo": "{count} мин назад",
       "hoursAgo": "{count} ч назад",
@@ -70,7 +97,16 @@
     "salaryUnknown": "Зарплата не указана",
     "close": "Закрыть",
     "apply": "Откликнуться",
-    "applyOnlyCandidate": "Откликаться могут только кандидаты"
+    "applyOnlyCandidate": "Откликаться могут только кандидаты",
+    "salaryLine": "{value}",
+    "salaryRange": "{from} - {to}",
+    "salaryUnknownValue": "—",
+    "applied": "Вы откликнулись",
+    "applyAlreadyApplied": "Вы уже откликнулись на эту вакансию.",
+    "applyNeedLogin": "Войдите в аккаунт, чтобы откликнуться.",
+    "loadErrorTitle": "Не удалось загрузить вакансию",
+    "loadErrorBody": "Вакансия могла быть удалена или произошла ошибка сети.",
+    "retry": "Повторить"
   },
   "apply": {
     "title": "Отклик на вакансию",
@@ -83,6 +119,7 @@
     "cvHint": "Загрузите актуальное резюме.",
     "cancel": "Отмена",
     "submit": "Отправить отклик",
+    "successToast": "Отклик успешно отправлен.",
     "submitError": "Не удалось отправить отклик. Попробуйте ещё раз.",
     "success": "Отклик успешно отправлен."
   },
@@ -92,6 +129,8 @@
     "accountTypeLabel": "Тип аккаунта",
     "accountTypeCandidate": "Кандидат",
     "accountTypeCompany": "Компания",
+    "avatarCompany": "🏢",
+    "avatarCandidate": "👤",
     "emailLabel": "Email",
     "memberSinceLabel": "С нами с",
     "memberSinceValue": "{date}",
@@ -125,5 +164,12 @@
     "filterLocation": "Локация",
     "filterJobType": "Тип занятости",
     "filterStatus": "Статус"
+  },
+
+  "notFound": {
+    "title": "404",
+    "description": "Страница не найдена.",
+    "goLogin": "Войти",
+    "goHome": "На главную"
   }
 }

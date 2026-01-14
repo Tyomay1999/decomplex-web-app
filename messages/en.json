@@ -23,7 +23,23 @@
     "lastName": "Last name",
     "companyName": "Company name",
     "haveAccount": "Already have an account?",
-    "logIn": "Sign in"
+    "logIn": "Sign in",
+
+    "placeholders": {
+      "email": "you@example.com",
+      "password": "••••••••",
+      "firstName": "John",
+      "lastName": "Doe",
+      "companyName": "Acme Corp"
+    },
+    "errors": {
+      "loginFailed": "Login failed. Please check your credentials.",
+      "registerFailed": "Registration failed. Please check your data and try again.",
+      "companyRegisterFailed": "Company registration failed. Please check your data and try again.",
+      "fillEmailPassword": "Please fill email and password.",
+      "fillFirstLastName": "Please fill first name and last name.",
+      "fillCompanyName": "Please fill company name."
+    }
   },
   "header": {
     "brand": "Jobs",
@@ -34,9 +50,17 @@
     "signup": "Create account",
     "logout": "Sign out",
     "language": "Language",
+    "menu": "Menu",
     "theme": {
-      "light": "Light mode",
-      "dark": "Dark mode"
+      "label": "Toggle theme",
+      "light": "Light theme",
+      "dark": "Dark theme"
+    },
+    "logoutConfirm": {
+      "title": "Log out?",
+      "description": "You’ll need to sign in again to access your account.",
+      "cancel": "Cancel",
+      "confirm": "Log out"
     }
   },
   "home": {
@@ -50,6 +74,9 @@
     "loadError": "Failed to load job openings",
     "retry": "Retry",
     "emptyTitle": "No job openings available at the moment",
+    "loadErrorTitle": "Couldn’t load vacancies",
+    "loadErrorBody": "Please check your connection and try again.",
+    "reload": "Reload",
     "posted": {
       "minutesAgo": "{count} min ago",
       "hoursAgo": "{count} hours ago",
@@ -70,7 +97,16 @@
     "salaryUnknown": "Salary not specified",
     "close": "Close",
     "apply": "Apply",
-    "applyOnlyCandidate": "Only candidates can apply"
+    "applyOnlyCandidate": "Only candidates can apply",
+    "salaryLine": "{value}",
+    "salaryRange": "{from} - {to}",
+    "salaryUnknownValue": "—",
+    "applied": "Applied",
+    "applyAlreadyApplied": "You have already applied to this vacancy.",
+    "applyNeedLogin": "Please log in to apply.",
+    "loadErrorTitle": "Couldn’t load vacancy",
+    "loadErrorBody": "The vacancy may have been removed or a network error occurred.",
+    "retry": "Retry"
   },
   "apply": {
     "title": "Apply for Position",
@@ -84,6 +120,7 @@
     "cancel": "Cancel",
     "submit": "Submit Application",
     "submitError": "Failed to submit application. Please try again.",
+    "successToast": "Application sent successfully.",
     "success": "Application submitted successfully."
   },
   "profile": {
@@ -91,6 +128,8 @@
     "fallbackName": "User",
     "accountTypeLabel": "Account type",
     "accountTypeCandidate": "Candidate",
+    "avatarCompany": "🏢",
+    "avatarCandidate": "👤",
     "accountTypeCompany": "Company",
     "emailLabel": "Email",
     "memberSinceLabel": "Member since",
@@ -124,6 +163,16 @@
     "filterReset": "Reset",
     "filterLocation": "Location",
     "filterJobType": "Job type",
-    "filterStatus": "Status"
+    "filterStatus": "Status",
+
+    "loadErrorTitle": "Failed to load applications",
+    "loadErrorBody": "Something went wrong. Please try again."
+  },
+
+  "notFound": {
+    "title": "404",
+    "description": "The page you are looking for could not be found.",
+    "goLogin": "Log in",
+    "goHome": "Go to homepage"
   }
 }

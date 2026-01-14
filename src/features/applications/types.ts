@@ -1,4 +1,6 @@
-export type ApplicationStatus =
+import type { ApiSuccessResponse } from "@/services/types";
+
+export type ApplicationStatusKnown =
   | "applied"
   | "pending"
   | "reviewing"
@@ -6,8 +8,9 @@ export type ApplicationStatus =
   | "rejected"
   | "accepted"
   | "canceled"
-  | "withdrawn"
-  | string;
+  | "withdrawn";
+
+export type ApplicationStatus = ApplicationStatusKnown | (string & {});
 
 export type ApplicationEntityDto = {
   id: string;
@@ -30,7 +33,4 @@ export type ListMyApplicationsQueryDto = {
   cursor?: string | null;
 };
 
-export type ListMyApplicationsResponseDto = {
-  success: boolean;
-  data: MyApplicationsPageDto;
-};
+export type ListMyApplicationsResponseDto = ApiSuccessResponse<MyApplicationsPageDto>;

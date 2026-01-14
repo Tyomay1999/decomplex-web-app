@@ -1,3 +1,5 @@
+"use client";
+
 type UiVacancy = {
   id: string;
   title: string;
@@ -20,11 +22,8 @@ export function VacancyCard({ vacancy, onClick }: Props) {
       onClick={onClick}
     >
       <h3 className="vacancy-title text-primary">{vacancy.title}</h3>
-
       <p className="vacancy-company text-secondary">{vacancy.companyId}</p>
-
-      <p className="vacancy-location text-secondary">📍 {vacancy.location}</p>
-
+      <p className="vacancy-location text-secondary">{vacancy.location}</p>
       <div className="vacancy-meta border-color text-tertiary">{vacancy.postedLabel}</div>
     </div>
   );

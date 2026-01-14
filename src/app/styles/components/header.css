@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
+  z-index: 400;
   position: relative;
 }
 
@@ -77,6 +78,21 @@
 .btn-primary {
   background-color: #3b82f6;
   color: #ffffff;
+}
+
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  background-color: rgba(99, 158, 250, 0.81);
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+  cursor: not-allowed;
+
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.9);
+  -webkit-appearance: none;
+  appearance: none;
+
+  filter: none;
+  pointer-events: none;
 }
 
 .auth-actions {
@@ -197,6 +213,22 @@
     display: none;
   }
   .auth-actions > .logout {
+    display: none;
+  }
+}
+
+.auth-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-email {
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .user-email {
     display: none;
   }
 }

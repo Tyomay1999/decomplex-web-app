@@ -1,27 +1,18 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { useRouter } from "@/i18n/navigation";
 
-import Header from "./Header";
-import type { Lang } from "./types";
+import { useAppSelector } from "@/store/hooks";
+import { useLogoutMutation, useMeQuery } from "@/features/auth/authApi";
+import { getAccessTokenFromCookie, getRefreshTokenFromCookie } from "@/lib/authCookies";
 
-import { useAppSelector } from "../../store/hooks";
-import { useLogoutMutation, useMeQuery } from "../../features/auth/authApi";
-import { getAccessTokenFromCookie, getRefreshTokenFromCookie } from "../../lib/authCookies";
+import { Header } from "./Header";
+import { useThemePreference, useHeaderLocale } from "./hooks";
 
-function isLang(v: unknown): v is Lang {
-  return v === "en" || v === "hy" || v === "ru";
-}
-
-export default function HeaderContainer() {
+export function HeaderContainer() {
   const router = useRouter();
-  const params = useParams<{ locale?: string }>();
-
-  const locale: Lang = useMemo(() => {
-    const l = params?.locale;
-    return isLang(l) ? l : "en";
-  }, [params?.locale]);
+  const locale = useHeaderLocale();
 
   const user = useAppSelector((s) => s.auth.user);
 
@@ -32,10 +23,11 @@ export default function HeaderContainer() {
     return Boolean(at || rt);
   }, [user]);
 
-  const { isLoading } = useMeQuery(undefined, {
+  useMeQuery(undefined, {
     skip: !hasSessionHint,
     refetchOnMountOrArgChange: true,
   });
+
   const [logout] = useLogoutMutation();
 
   const isAuthenticated = Boolean(user);
@@ -44,13 +36,21 @@ export default function HeaderContainer() {
     try {
       await logout().unwrap();
     } finally {
-      router.replace(`/${locale}/login`);
+      router.replace("/login");
     }
   };
 
-  useEffect(() => {}, [isLoading]);
+  const { theme, mounted, toggleTheme } = useThemePreference();
 
   return (
-    <Header isAuthenticated={isAuthenticated} userEmail={user?.email ?? null} onLogout={onLogout} />
+    <Header
+      locale={locale}
+      isAuthenticated={isAuthenticated}
+      userEmail={user?.email ?? null}
+      theme={theme}
+      mounted={mounted}
+      toggleTheme={toggleTheme}
+      onLogout={onLogout}
+    />
   );
 }

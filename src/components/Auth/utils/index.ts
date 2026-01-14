@@ -1,0 +1,1 @@
+export { getAdminUrl } from "./adminUrl";

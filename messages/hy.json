@@ -24,7 +24,23 @@
     "lastName": "Ազգանուն",
     "companyName": "Ընկերության անվանումը",
     "haveAccount": "Արդեն ունե՞ք հաշիվ",
-    "logIn": "Մուտք"
+    "logIn": "Մուտք",
+
+    "placeholders": {
+      "email": "you@example.com",
+      "password": "••••••••",
+      "firstName": "Արամ",
+      "lastName": "Պետրոսյան",
+      "companyName": "Example LLC"
+    },
+    "errors": {
+      "loginFailed": "Մուտքը ձախողվեց։ Ստուգեք տվյալները և փորձեք կրկին։",
+      "registerFailed": "Գրանցումը ձախողվեց։ Ստուգեք տվյալները և փորձեք կրկին։",
+      "companyRegisterFailed": "Ընկերության գրանցումը ձախողվեց։ Ստուգեք տվյալները և փորձեք կրկին։",
+      "fillEmailPassword": "Խնդրում ենք լրացնել էլ․ փոստը և գաղտնաբառը։",
+      "fillFirstLastName": "Խնդրում ենք լրացնել անունը և ազգանունը։",
+      "fillCompanyName": "Խնդրում ենք լրացնել ընկերության անունը։"
+    }
   },
   "header": {
     "brand": "Աշխատանքներ",
@@ -35,9 +51,17 @@
     "signup": "Ստեղծել հաշիվ",
     "logout": "Ելք",
     "language": "Լեզու",
+    "menu": "Մենյու",
     "theme": {
-      "light": "Բաց ռեժիմ",
-      "dark": "Մուգ ռեժիմ"
+      "label": "Փոխել թեման",
+      "light": "Լուսավոր թեմա",
+      "dark": "Մութ թեմա"
+    },
+    "logoutConfirm": {
+      "title": "Դուրս գալ՞",
+      "description": "Կրկին մուտք գործելու համար պետք է նորից մուտք կատարեք։",
+      "cancel": "Չեղարկել",
+      "confirm": "Դուրս գալ"
     }
   },
   "home": {
@@ -52,6 +76,9 @@
     "retry": "Կրկնել",
     "emptyTitle": "Այս պահին թափուր հաստիքներ չկան",
     "unknownLocation": "Տեղանքը նշված չէ",
+    "loadErrorTitle": "Չհաջողվեց բեռնել թափուր աշխատատեղերը",
+    "loadErrorBody": "Խնդրում ենք ստուգել ինտերնետ կապը և փորձել կրկին։",
+    "reload": "Թարմացնել",
     "posted": {
       "minutesAgo": "{count} րոպե առաջ",
       "hoursAgo": "{count} ժամ առաջ",
@@ -70,7 +97,16 @@
     "salaryUnknown": "Աշխատավարձը նշված չէ",
     "close": "Փակել",
     "apply": "Դիմել",
-    "applyOnlyCandidate": "Դիմել կարող են միայն թեկնածուները"
+    "applyOnlyCandidate": "Դիմել կարող են միայն թեկնածուները",
+    "salaryLine": "{value}",
+    "salaryRange": "{from} - {to}",
+    "salaryUnknownValue": "—",
+    "applied": "Դուք արդեն արձագանքել եք",
+    "applyAlreadyApplied": "Դուք արդեն արձագանքել եք այս թափուր աշխատատեղին։",
+    "applyNeedLogin": "Մուտք գործեք՝ արձագանքելու համար։",
+    "loadErrorTitle": "Չհաջողվեց բեռնել աշխատատեղը",
+    "loadErrorBody": "Աշխատատեղը կարող է հեռացված լինել կամ առաջացել է ցանցային սխալ։",
+    "retry": "Կրկնել"
   },
   "apply": {
     "title": "Դիմում թափուր տեղին",
@@ -83,6 +119,7 @@
     "cvHint": "Վերբեռնեք ձեր արդի ռեզյումեն։",
     "cancel": "Չեղարկել",
     "submit": "Ուղարկել դիմումը",
+    "successToast": "Դիմումը հաջողությամբ ուղարկվեց։",
     "submitError": "Չհաջողվեց ուղարկել դիմումը։ Փորձեք կրկին։",
     "success": "Դիմումը հաջողությամբ ուղարկվեց։"
   },
@@ -92,6 +129,8 @@
     "accountTypeLabel": "Հաշվի տեսակը",
     "accountTypeCandidate": "Թեկնածու",
     "accountTypeCompany": "Ընկերություն",
+    "avatarCompany": "🏢",
+    "avatarCandidate": "👤",
     "emailLabel": "Էլ․ փոստ",
     "memberSinceLabel": "Գրանցման ամսաթիվը",
     "memberSinceValue": "{date}",
@@ -124,6 +163,16 @@
     "filterReset": "Վերակայել",
     "filterLocation": "Տեղակայություն",
     "filterJobType": "Աշխատանքի տեսակ",
-    "filterStatus": "Կարգավիճակ"
+    "filterStatus": "Կարգավիճակ",
+
+    "loadErrorTitle": "Չհաջողվեց բեռնել դիմումները",
+    "loadErrorBody": "Սխալ տեղի ունեցավ։ Խնդրում ենք փորձել կրկին։"
+  },
+
+  "notFound": {
+    "title": "404",
+    "description": "Ձեր որոնած էջը չի գտնվել։",
+    "goLogin": "Մուտք գործել",
+    "goHome": "Գլխավոր էջ"
   }
 }

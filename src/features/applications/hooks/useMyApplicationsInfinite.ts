@@ -1,12 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLazyGetMyApplicationsQuery } from "../applicationsApi";
 import type { ApplicationEntityDto } from "../types";
 
 type Options = {
   limit?: number;
 };
+
+function uniqById(items: ApplicationEntityDto[]): ApplicationEntityDto[] {
+  const map = new Map<string, ApplicationEntityDto>();
+  for (const it of items) map.set(it.id, it);
+  return Array.from(map.values());
+}
 
 export function useMyApplicationsInfinite(opts: Options = {}) {
   const limit = opts.limit ?? 20;
@@ -16,52 +22,58 @@ export function useMyApplicationsInfinite(opts: Options = {}) {
   const [hasMore, setHasMore] = useState(true);
 
   const [trigger, query] = useLazyGetMyApplicationsQuery();
+  const stampRef = useRef(0);
 
   const loadFirst = useCallback(async () => {
+    const stamp = ++stampRef.current;
+
     setCursor(null);
     setItems([]);
     setHasMore(true);
 
-    const res = await trigger({ limit, cursor: null }, true);
-    if (!res.data) return;
+    try {
+      const res = await trigger({ limit, cursor: null }, true).unwrap();
+      if (stampRef.current !== stamp) return;
 
-    setItems(res.data.items);
-    setCursor(res.data.nextCursor);
-    setHasMore(Boolean(res.data.nextCursor));
+      setItems(res.items ?? []);
+      setCursor(res.nextCursor ?? null);
+      setHasMore(Boolean(res.nextCursor));
+    } catch {
+      if (stampRef.current !== stamp) return;
+      setHasMore(false);
+    }
   }, [trigger, limit]);
 
   const loadMore = useCallback(async () => {
-    if (!hasMore || query.isFetching) return;
+    if (!hasMore) return;
+    if (query.isFetching) return;
 
-    const res = await trigger({ limit, cursor }, true);
-    if (!res.data) return;
+    const stamp = stampRef.current;
 
-    setItems((prev) => {
-      const seen = new Set(prev.map((x) => x.id));
-      const next = res.data!.items.filter((x) => !seen.has(x.id));
-      return [...prev, ...next];
-    });
+    try {
+      const res = await trigger({ limit, cursor }, true).unwrap();
+      if (stampRef.current !== stamp) return;
 
-    setCursor(res.data.nextCursor);
-    setHasMore(Boolean(res.data.nextCursor));
-  }, [trigger, limit, cursor, hasMore, query.isFetching]);
+      setItems((prev) => uniqById([...prev, ...(res.items ?? [])]));
+      setCursor(res.nextCursor ?? null);
+      setHasMore(Boolean(res.nextCursor));
+    } catch {
+      if (stampRef.current !== stamp) return;
+      setHasMore(false);
+    }
+  }, [hasMore, query.isFetching, trigger, limit, cursor]);
 
   useEffect(() => {
     loadFirst();
   }, [loadFirst]);
 
-  const state = useMemo(
-    () => ({
-      items,
-      hasMore,
-      isLoading: query.isLoading && items.length === 0,
-      isFetching: query.isFetching,
-      isError: query.isError,
-      refetch: loadFirst,
-      loadMore,
-    }),
-    [items, hasMore, query.isLoading, query.isFetching, query.isError, loadFirst, loadMore],
-  );
-
-  return state;
+  return {
+    items,
+    hasMore,
+    isInitialLoading: query.isFetching && items.length === 0,
+    isFetching: query.isFetching,
+    isError: query.isError,
+    reload: loadFirst,
+    loadMore,
+  };
 }

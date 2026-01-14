@@ -1,34 +1,33 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
 
-import { AuthCard } from "../../../../components/Auth/AuthCard";
-import { AuthField } from "../../../../components/Auth/AuthField";
-import { AuthPrimaryButton } from "../../../../components/Auth/AuthPrimaryButton";
-import { AuthFooterLink } from "../../../../components/Auth/AuthFooterLink";
-import { AccountTypeToggle } from "../../../../components/Auth/AccountTypeToggle";
+import { useRouter } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/config";
+import { defaultLocale, localeSet } from "@/i18n/config";
+
+import { useRegisterCandidateMutation, useRegisterCompanyMutation } from "@/features/auth";
+import { pushToast } from "@/features/notifications";
+import { useAppDispatch } from "@/store/hooks";
 
 import {
-  useRegisterCandidateMutation,
-  useRegisterCompanyMutation,
-} from "../../../../features/auth/authApi";
+  AccountTypeToggle,
+  AuthCard,
+  AuthField,
+  AuthFooterLink,
+  AuthPrimaryButton,
+  getAdminUrl,
+} from "@/components/Auth";
+import type { AccountType } from "@/components/Auth";
 
-type Locale = "en" | "hy" | "ru";
-type AccountType = "candidate" | "company";
-type BackendLocale = "am" | "ru" | "en";
+type Params = { locale?: string };
 
-function mapUiLocaleToBackend(ui: Locale): BackendLocale {
-  if (ui === "hy") return "am";
-  return ui;
-}
-
-function getAdminUrl(): string {
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    return `http://localhost:5173/`;
-  }
-  return `https://decomplex-admin.tyomay.dev/`;
+function toLocale(v: unknown): Locale {
+  if (typeof v === "string" && localeSet.has(v as Locale)) return v as Locale;
+  return defaultLocale;
 }
 
 export default function RegisterPage() {
@@ -36,54 +35,35 @@ export default function RegisterPage() {
   const tAuth = useTranslations("Auth");
 
   const router = useRouter();
-  const params = useParams<{ locale: string }>();
-  const locale = (params?.locale ?? "en") as Locale;
+  const dispatch = useAppDispatch();
 
-  const backendLocale = mapUiLocaleToBackend(locale);
+  const params = useParams<Params>();
+  const locale = useMemo<Locale>(() => toLocale(params?.locale), [params?.locale]);
 
   const [accountType, setAccountType] = useState<AccountType>("candidate");
 
-  const [registerCandidate, { isLoading: isCandidateLoading, error: candidateError }] =
-    useRegisterCandidateMutation();
-
-  const [registerCompany, { isLoading: isCompanyLoading, error: companyError }] =
-    useRegisterCompanyMutation();
+  const [registerCandidate, { isLoading: isCandidateLoading }] = useRegisterCandidateMutation();
+  const [registerCompany, { isLoading: isCompanyLoading }] = useRegisterCompanyMutation();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [companyName, setCompanyName] = useState("");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [localError, setLocalError] = useState<string | null>(null);
-
-  const errorText = useMemo(() => {
-    if (localError) return localError;
-
-    if (accountType === "candidate" && candidateError) {
-      return "Registration failed. Please check your data and try again.";
-    }
-    if (accountType === "company" && companyError) {
-      return "Company registration failed. Please check your data and try again.";
-    }
-    return null;
-  }, [localError, candidateError, companyError, accountType]);
-
   const isLoading = accountType === "candidate" ? isCandidateLoading : isCompanyLoading;
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLocalError(null);
 
     if (!email || !password) {
-      setLocalError("Please fill email and password.");
+      dispatch(pushToast({ message: tAuth("errors.fillEmailPassword"), kind: "error" }));
       return;
     }
 
     if (accountType === "candidate") {
       if (!firstName || !lastName) {
-        setLocalError("Please fill first name and last name.");
+        dispatch(pushToast({ message: tAuth("errors.fillFirstLastName"), kind: "error" }));
         return;
       }
 
@@ -93,19 +73,19 @@ export default function RegisterPage() {
           lastName,
           email,
           password,
-          language: backendLocale,
+          language: locale,
         }).unwrap();
 
-        router.replace(`/${locale}`);
+        router.replace("/", { locale, scroll: false });
       } catch {
-        // handled via errorText
+        return;
       }
 
       return;
     }
 
     if (!companyName) {
-      setLocalError("Please fill company name.");
+      dispatch(pushToast({ message: tAuth("errors.fillCompanyName"), kind: "error" }));
       return;
     }
 
@@ -114,13 +94,13 @@ export default function RegisterPage() {
         name: companyName,
         email,
         password,
-        defaultLocale: backendLocale,
-        adminLanguage: backendLocale,
+        defaultLocale: locale,
+        adminLanguage: locale,
       }).unwrap();
 
-      window.open(getAdminUrl(), "blank");
+      window.location.assign(getAdminUrl());
     } catch {
-      // handled via errorText
+      return;
     }
   };
 
@@ -142,7 +122,7 @@ export default function RegisterPage() {
               label={tAuth("firstName")}
               value={firstName}
               onChange={setFirstName}
-              placeholder="John"
+              placeholder={tAuth("placeholders.firstName")}
               autoComplete="given-name"
               required
             />
@@ -151,7 +131,7 @@ export default function RegisterPage() {
               label={tAuth("lastName")}
               value={lastName}
               onChange={setLastName}
-              placeholder="Doe"
+              placeholder={tAuth("placeholders.lastName")}
               autoComplete="family-name"
               required
             />
@@ -162,7 +142,7 @@ export default function RegisterPage() {
             label={tAuth("companyName")}
             value={companyName}
             onChange={setCompanyName}
-            placeholder="Acme Corp"
+            placeholder={tAuth("placeholders.companyName")}
             autoComplete="organization"
             required
           />
@@ -174,7 +154,7 @@ export default function RegisterPage() {
           type="email"
           value={email}
           onChange={setEmail}
-          placeholder="you@example.com"
+          placeholder={tAuth("placeholders.email")}
           required
           autoComplete="email"
         />
@@ -185,12 +165,10 @@ export default function RegisterPage() {
           type="password"
           value={password}
           onChange={setPassword}
-          placeholder="••••••••"
+          placeholder={tAuth("placeholders.password")}
           required
           autoComplete="new-password"
         />
-
-        {errorText ? <div style={{ color: "#EF4444", fontSize: 14 }}>{errorText}</div> : null}
 
         <AuthPrimaryButton disabled={isLoading}>
           {isLoading ? tCommon("loading") : tCommon("continue")}
@@ -200,7 +178,7 @@ export default function RegisterPage() {
       <AuthFooterLink
         text={tAuth("haveAccount")}
         linkText={tAuth("logIn")}
-        onClick={() => router.push(`/${locale}/login`)}
+        onClick={() => router.push("/login", { locale, scroll: false })}
       />
     </AuthCard>
   );

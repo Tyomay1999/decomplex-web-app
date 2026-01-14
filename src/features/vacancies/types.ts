@@ -1,3 +1,5 @@
+import type { ApiSuccessResponse } from "@/services/types";
+
 export type VacancyStatus = "active" | "archived";
 export type VacancyJobType = "full_time" | "part_time" | "remote" | "hybrid";
 
@@ -14,6 +16,7 @@ export type VacancyEntityDto = {
   status: VacancyStatus;
   createdAt: string;
   updatedAt: string;
+  hasApplied?: boolean;
 };
 
 export type ListVacanciesQueryDto = {
@@ -21,16 +24,14 @@ export type ListVacanciesQueryDto = {
   status?: VacancyStatus;
   jobType?: VacancyJobType;
   limit: number;
-  cursor?: string;
+  cursor?: string | null;
 };
-
-export type ApiSuccess<T> = { success: boolean; data: T };
 
 export type VacanciesPageDto = {
   nextCursor: string | null;
   vacancies: VacancyEntityDto[];
 };
 
-export type ListVacanciesResponseDto = ApiSuccess<VacanciesPageDto>;
+export type ListVacanciesResponseDto = ApiSuccessResponse<VacanciesPageDto>;
 
-export type GetVacancyByIdResponseDto = ApiSuccess<{ vacancy: VacancyEntityDto }>;
+export type GetVacancyByIdResponseDto = ApiSuccessResponse<{ vacancy: VacancyEntityDto }>;

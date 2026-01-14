@@ -13,53 +13,58 @@ function uniqById(items: VacancyEntityDto[]): VacancyEntityDto[] {
 }
 
 export function useVacanciesInfinite(params: Params) {
-  const [trigger, { isFetching, isError }] = useLazyGetVacanciesQuery();
+  const [trigger, query] = useLazyGetVacanciesQuery();
 
   const [items, setItems] = useState<VacancyEntityDto[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  const stampRef = useRef(0);
 
   const paramsKey = useMemo(() => JSON.stringify(params), [params]);
-  const isEndReached = nextCursor === null && !isInitialLoading && items.length > 0;
-
-  const resetRef = useRef(0);
 
   const loadFirst = useCallback(async () => {
-    const stamp = ++resetRef.current;
+    const stamp = ++stampRef.current;
 
     setIsInitialLoading(true);
     setItems([]);
     setNextCursor(null);
 
     try {
-      const res = await trigger({ ...params, cursor: undefined }, true).unwrap();
-      if (resetRef.current !== stamp) return;
+      const res = await trigger({ ...params, cursor: null }, true).unwrap();
+      if (stampRef.current !== stamp) return;
 
-      setItems(res?.vacancies);
-      setNextCursor(res?.nextCursor);
+      setItems(res.vacancies ?? []);
+      setNextCursor(res.nextCursor ?? null);
     } finally {
-      if (resetRef.current === stamp) setIsInitialLoading(false);
+      if (stampRef.current === stamp) setIsInitialLoading(false);
     }
-  }, [params, trigger]);
+  }, [trigger, params]);
 
   const loadMore = useCallback(async () => {
-    if (isFetching) return;
+    if (query.isFetching) return;
     if (!nextCursor) return;
 
+    const stamp = stampRef.current;
+
     const res = await trigger({ ...params, cursor: nextCursor }, true).unwrap();
-    setItems((prev) => uniqById([...prev, ...res.vacancies]));
-    setNextCursor(res.nextCursor);
-  }, [isFetching, nextCursor, params, trigger]);
+    if (stampRef.current !== stamp) return;
+
+    setItems((prev) => uniqById([...prev, ...(res.vacancies ?? [])]));
+    setNextCursor(res.nextCursor ?? null);
+  }, [query.isFetching, nextCursor, trigger, params]);
 
   useEffect(() => {
     loadFirst();
-  }, [paramsKey]);
+  }, [paramsKey, loadFirst]);
+
+  const isEndReached = !isInitialLoading && !query.isFetching && nextCursor === null;
 
   return {
     items,
     nextCursor,
-    isFetching,
-    isError,
+    isFetching: query.isFetching,
+    isError: query.isError,
     isInitialLoading,
     isEndReached,
     loadMore,

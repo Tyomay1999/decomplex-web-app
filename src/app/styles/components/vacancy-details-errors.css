@@ -1,0 +1,48 @@
+.vacancy-details-error {
+  width: 100%;
+  max-width: 900px;
+  padding: 22px;
+  border-radius: 18px;
+  border-width: 1px;
+  display: flex;
+  gap: 14px;
+}
+
+.vde__icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dark .vde__icon {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.vde__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.vde__title {
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.vde__body {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.vde__actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

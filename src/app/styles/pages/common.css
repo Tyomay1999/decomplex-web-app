@@ -11,3 +11,68 @@
   font-weight: 600;
   letter-spacing: -0.4px;
 }
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border-radius: 999px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.95);
+
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.end-reached {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.end-reached__line {
+  height: 1px;
+  flex: 1;
+  max-width: 160px;
+  background: rgba(120, 120, 120, 0.25);
+}
+
+.end-reached__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border-width: 1px;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 768px) {
+  .end-reached__line {
+    max-width: 84px;
+  }
+}
+
+.confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dark .confirm-icon {
+  background: rgba(255, 255, 255, 0.1);
+}

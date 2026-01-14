@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
-import { locales, defaultLocale, Locale } from "./i18n/config";
+import { locales, defaultLocale } from "./i18n/config";
+import type { Locale } from "./i18n/config";
 
 const intlMiddleware = createIntlMiddleware({
   locales,

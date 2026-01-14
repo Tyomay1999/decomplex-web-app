@@ -1,0 +1,1 @@
+export { useVacanciesInfinite } from "./useVacanciesInfinite";

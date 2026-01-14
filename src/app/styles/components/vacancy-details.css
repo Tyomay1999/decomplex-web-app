@@ -1,0 +1,102 @@
+.vacancy-details__section {
+  padding-top: 32px;
+}
+
+.vacancy-details__container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.vacancy-details__state {
+  padding: 24px;
+}
+
+.vacancy-details__header-left {
+  flex: 1;
+}
+
+.vacancy-details__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vacancy-details__back {
+  font-size: 0;
+}
+
+.vacancy-details__back-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.vacancy-card--skeleton {
+  border-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.vacancy-card--skeleton .sk-line,
+.vacancy-card--skeleton .sk-chip {
+  border-radius: 10px;
+  opacity: 0.9;
+  background: rgba(120, 120, 120, 0.18);
+}
+
+.vacancy-card--skeleton .sk-title {
+  height: 16px;
+  width: 70%;
+  margin-bottom: 10px;
+}
+
+.vacancy-card--skeleton .sk-subtitle {
+  height: 12px;
+  width: 52%;
+  margin-bottom: 14px;
+}
+
+.vacancy-card--skeleton .sk-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.vacancy-card--skeleton .sk-chip {
+  height: 22px;
+  width: 74px;
+  border-radius: 999px;
+}
+
+.vacancy-card--skeleton .sk-meta {
+  height: 12px;
+  width: 35%;
+}
+
+.vacancy-card--skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: sk-shimmer 1.1s infinite;
+}
+
+@keyframes sk-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vacancy-card--skeleton::after {
+    animation: none;
+  }
+}

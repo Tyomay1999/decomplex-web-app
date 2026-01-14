@@ -1,0 +1,140 @@
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.avatar-btn {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 6px;
+  height: 45px;
+  width: 45px;
+  display: grid;
+  place-items: center;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 0;
+  font-weight: 700;
+  font-size: 13px;
+
+  padding: 0;
+
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dark .avatar-circle {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.user-menu-icon-btn {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-menu-caret {
+  display: inline-block;
+  transform: translateY(-1px);
+  transition: transform 160ms ease;
+  opacity: 0.8;
+}
+
+.user-menu-caret.open {
+  transform: translateY(-1px) rotate(180deg);
+}
+
+.user-menu__panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 292px;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+}
+
+.user-menu__section {
+  padding: 8px;
+}
+
+.user-menu__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.user-menu__label {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.user-menu__email {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-menu__divider {
+  border-top: 1px solid;
+  margin: 6px 0;
+}
+
+.user-menu__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.lang-segment {
+  margin-top: 10px;
+  display: inline-flex;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dark .lang-segment {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.lang-segment__btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.lang-segment__btn.active {
+  background: rgba(0, 0, 0, 0.06);
+  font-weight: 700;
+}
+
+.dark .lang-segment__btn.active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .header-desktop-only {
+    display: none;
+  }
+}

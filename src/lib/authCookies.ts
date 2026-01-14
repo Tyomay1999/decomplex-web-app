@@ -1,41 +1,100 @@
 const ACCESS_KEY = "dc_accessToken";
 const REFRESH_KEY = "dc_refreshToken";
 
-const COOKIE_DOMAIN = process.env.NODE_ENV === "production" ? ".tyomay.dev" : undefined;
+type CookieOptions = {
+  maxAgeSeconds: number;
+  path: string;
+  sameSite: "Lax";
+  secure: boolean;
+  domain?: string;
+};
+
+function isBrowser(): boolean {
+  return typeof document !== "undefined";
+}
 
 function isHttps(): boolean {
   if (typeof window === "undefined") return process.env.NODE_ENV === "production";
   return window.location.protocol === "https:";
 }
 
-function setCookie(name: string, value: string, days = 7) {
-  if (typeof document === "undefined") return;
+function normalizeDomain(raw: unknown): string | undefined {
+  if (typeof raw !== "string") return undefined;
+  const v = raw.trim();
+  if (v.length === 0) return undefined;
+  return v;
+}
 
-  const maxAge = days * 24 * 60 * 60;
-  const secure = isHttps() ? "; Secure" : "";
-  const domain = COOKIE_DOMAIN ? `; Domain=${COOKIE_DOMAIN}` : "";
+function getCookieDomain(): string | undefined {
+  return normalizeDomain(process.env.NEXT_PUBLIC_COOKIE_DOMAIN);
+}
 
-  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}${domain}`;
+function serializeCookie(name: string, value: string, opts: CookieOptions): string {
+  const base = `${name}=${encodeURIComponent(value)}`;
+  const maxAge = `Max-Age=${Math.max(0, Math.floor(opts.maxAgeSeconds))}`;
+  const path = `Path=${opts.path}`;
+  const sameSite = `SameSite=${opts.sameSite}`;
+  const secure = opts.secure ? "Secure" : "";
+  const domain = opts.domain ? `Domain=${opts.domain}` : "";
+
+  const parts = [base, maxAge, path, sameSite, secure, domain].filter((p) => p.length > 0);
+  return parts.join("; ");
+}
+
+function setCookie(name: string, value: string, maxAgeSeconds: number): void {
+  if (!isBrowser()) return;
+
+  const opts: CookieOptions = {
+    maxAgeSeconds,
+    path: "/",
+    sameSite: "Lax",
+    secure: isHttps(),
+    domain: getCookieDomain(),
+  };
+
+  document.cookie = serializeCookie(name, value, opts);
 }
 
 function getCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
+  if (!isBrowser()) return null;
+
+  const pattern = new RegExp(`(?:^|;\\s*)${name}=([^;]+)`);
+  const match = document.cookie.match(pattern);
+
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-function deleteCookie(name: string) {
-  if (typeof document === "undefined") return;
+function deleteCookie(name: string): void {
+  if (!isBrowser()) return;
 
-  const secure = isHttps() ? "; Secure" : "";
-  const domain = COOKIE_DOMAIN ? `; Domain=${COOKIE_DOMAIN}` : "";
+  const opts: CookieOptions = {
+    maxAgeSeconds: 0,
+    path: "/",
+    sameSite: "Lax",
+    secure: isHttps(),
+    domain: getCookieDomain(),
+  };
 
-  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax${secure}${domain}`;
+  document.cookie = serializeCookie(name, "", opts);
 }
 
-export function setAuthCookies(accessToken: string, refreshToken: string) {
-  setCookie(ACCESS_KEY, accessToken);
-  setCookie(REFRESH_KEY, refreshToken);
+export type AuthCookieTtl = {
+  accessMaxAgeSeconds: number;
+  refreshMaxAgeSeconds: number;
+};
+
+const defaultTtl: AuthCookieTtl = {
+  accessMaxAgeSeconds: 60 * 60,
+  refreshMaxAgeSeconds: 60 * 60 * 24 * 30,
+};
+
+export function setAuthCookies(
+  accessToken: string,
+  refreshToken: string,
+  ttl: AuthCookieTtl = defaultTtl,
+): void {
+  if (accessToken) setCookie(ACCESS_KEY, accessToken, ttl.accessMaxAgeSeconds);
+  if (refreshToken) setCookie(REFRESH_KEY, refreshToken, ttl.refreshMaxAgeSeconds);
 }
 
 export function getAccessTokenFromCookie(): string | null {
@@ -46,7 +105,7 @@ export function getRefreshTokenFromCookie(): string | null {
   return getCookie(REFRESH_KEY);
 }
 
-export function clearAuthCookies() {
+export function clearAuthCookies(): void {
   deleteCookie(ACCESS_KEY);
   deleteCookie(REFRESH_KEY);
 }

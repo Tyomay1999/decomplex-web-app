@@ -118,6 +118,41 @@
   gap: 16px;
 }
 
+.btn-full {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.auth-remember {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.auth-remember__checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.auth-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
+
+.auth-error {
+  color: #ef4444;
+  font-size: 14px;
+}
+
 @media (max-width: 768px) {
   .auth-container {
     margin: 40px auto;

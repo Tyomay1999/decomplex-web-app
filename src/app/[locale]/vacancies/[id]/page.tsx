@@ -1,38 +1,33 @@
 import { locales } from "@/i18n/config";
 import { env } from "@/config/env";
 import type { ListVacanciesResponseDto } from "@/features/vacancies/types";
-import { VacancyDetailsClient } from "./VacancyDetailsClient";
+import { VacancyDetailsPage } from "@/components/pages/vacancy-details";
 
-export async function generateStaticParams() {
+export const dynamicParams = false;
+
+export async function generateStaticParams(): Promise<Array<{ locale: string; id: string }>> {
   const baseUrl = (env.apiBaseUrl ?? "").replace(/\/$/, "");
-
   const limit = 200;
 
   const res = await fetch(`${baseUrl}/vacancies?status=active&limit=${limit}`, {
-    cache: "no-store",
     headers: { "Content-Type": "application/json" },
   });
 
-  const json = (await res.json()) as ListVacanciesResponseDto;
+  if (!res.ok) return [];
 
+  const json = (await res.json()) as ListVacanciesResponseDto;
   const vacancies = json?.data?.vacancies ?? [];
 
-  const ids = vacancies.map((v) => v.id);
+  const ids = vacancies.map((v) => String(v.id)).filter((v) => v.length > 0);
 
-  const params: Array<{ locale: string; id: string }> = [];
-  for (const l of locales) {
-    for (const id of ids) params.push({ locale: l, id });
-  }
-
-  return params;
+  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })));
 }
 
 type PageProps = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function VacancyPage({ params }: PageProps) {
-  const { id, locale } = await params;
-
-  return <VacancyDetailsClient id={id} locale={locale} />;
+  const { id } = await params;
+  return <VacancyDetailsPage id={id} />;
 }

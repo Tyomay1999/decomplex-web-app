@@ -12,6 +12,19 @@ function uniqById(items: VacancyEntityDto[]): VacancyEntityDto[] {
   return Array.from(map.values());
 }
 
+type AnyRecord = Record<string, unknown>;
+
+function buildParamsKey(params: Params): string {
+  const entries = Object.entries(params as AnyRecord).sort(([a], [b]) => a.localeCompare(b));
+  return entries
+    .map(([k, v]) => {
+      if (v === null) return `${k}=null`;
+      if (v === undefined) return `${k}=undefined`;
+      return `${k}=${String(v)}`;
+    })
+    .join("&");
+}
+
 export function useVacanciesInfinite(params: Params) {
   const [trigger, query] = useLazyGetVacanciesQuery();
 
@@ -21,7 +34,10 @@ export function useVacanciesInfinite(params: Params) {
 
   const stampRef = useRef(0);
 
-  const paramsKey = useMemo(() => JSON.stringify(params), [params]);
+  const paramsRef = useRef<Params>(params);
+  paramsRef.current = params;
+
+  const paramsKey = useMemo(() => buildParamsKey(params), [params]);
 
   const loadFirst = useCallback(async () => {
     const stamp = ++stampRef.current;
@@ -31,7 +47,8 @@ export function useVacanciesInfinite(params: Params) {
     setNextCursor(null);
 
     try {
-      const res = await trigger({ ...params, cursor: null }, true).unwrap();
+      const p = paramsRef.current;
+      const res = await trigger({ ...p, cursor: null }, true).unwrap();
       if (stampRef.current !== stamp) return;
 
       setItems(res.vacancies ?? []);
@@ -39,7 +56,7 @@ export function useVacanciesInfinite(params: Params) {
     } finally {
       if (stampRef.current === stamp) setIsInitialLoading(false);
     }
-  }, [trigger, params]);
+  }, [trigger]);
 
   const loadMore = useCallback(async () => {
     if (query.isFetching) return;
@@ -47,12 +64,13 @@ export function useVacanciesInfinite(params: Params) {
 
     const stamp = stampRef.current;
 
-    const res = await trigger({ ...params, cursor: nextCursor }, true).unwrap();
+    const p = paramsRef.current;
+    const res = await trigger({ ...p, cursor: nextCursor }, true).unwrap();
     if (stampRef.current !== stamp) return;
 
     setItems((prev) => uniqById([...prev, ...(res.vacancies ?? [])]));
     setNextCursor(res.nextCursor ?? null);
-  }, [query.isFetching, nextCursor, trigger, params]);
+  }, [query.isFetching, nextCursor, trigger]);
 
   useEffect(() => {
     loadFirst();

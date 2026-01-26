@@ -10,7 +10,10 @@ function isRecord(v: unknown): v is UserLike {
 function getStr(obj: unknown, key: string): string | null {
   if (!isRecord(obj)) return null;
   const v = obj[key];
-  return typeof v === "string" && v.trim() ? v : null;
+  if (typeof v !== "string") return null;
+
+  const t = v.trim();
+  return t ? t : null;
 }
 
 export function useUiProfile(primary: unknown, fallback: unknown, fallbackName: string): UiProfile {

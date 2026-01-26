@@ -10,32 +10,58 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: "always",
 });
 
+type MiddlewareDecision =
+  | { kind: "next" }
+  | { kind: "redirect"; pathname: string }
+  | { kind: "intl"; locale: Locale };
+
 function isLocale(v: string | undefined): v is Locale {
-  return !!v && locales.includes(v as Locale);
+  return typeof v === "string" && locales.includes(v as Locale);
+}
+
+function getSegmentLocale(pathname: string): Locale | null {
+  const seg = pathname.split("/")[1];
+  return isLocale(seg) ? seg : null;
+}
+
+function shouldBypass(pathname: string): boolean {
+  return pathname.startsWith("/_next") || pathname.includes(".");
+}
+
+function readCookieLocale(req: NextRequest): string | undefined {
+  return req.cookies.get("NEXT_LOCALE")?.value || req.cookies.get("dc_locale")?.value;
+}
+
+export function decideIntl(pathname: string, cookieLocale?: string): MiddlewareDecision {
+  if (shouldBypass(pathname)) return { kind: "next" };
+
+  const segLocale = getSegmentLocale(pathname);
+  if (!segLocale) {
+    const resolved = isLocale(cookieLocale) ? cookieLocale : defaultLocale;
+    const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
+    return { kind: "redirect", pathname: `/${resolved}${normalized}` };
+  }
+
+  return { kind: "intl", locale: segLocale };
 }
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const pathname = req.nextUrl.pathname;
+  const cookieLocale = readCookieLocale(req);
 
-  if (pathname.startsWith("/_next") || pathname.includes(".")) {
-    return NextResponse.next();
-  }
+  const decision = decideIntl(pathname, cookieLocale);
 
-  const seg = pathname.split("/")[1];
-  const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value || req.cookies.get("dc_locale")?.value;
+  if (decision.kind === "next") return NextResponse.next();
 
-  if (!isLocale(seg)) {
-    const resolved = isLocale(cookieLocale) ? cookieLocale : defaultLocale;
-
+  if (decision.kind === "redirect") {
     const url = req.nextUrl.clone();
-    url.pathname = `/${resolved}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
-
+    url.pathname = decision.pathname;
     return NextResponse.redirect(url);
   }
 
   const res = intlMiddleware(req);
 
-  res.cookies.set("dc_locale", seg, {
+  res.cookies.set("dc_locale", decision.locale, {
     path: "/",
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

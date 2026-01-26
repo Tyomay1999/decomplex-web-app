@@ -158,3 +158,5 @@ export const api = createApi({
   tagTypes: ["Vacancies", "Vacancy", "MyApplications"],
   endpoints: () => ({}),
 });
+
+export { baseQueryWithReauth };

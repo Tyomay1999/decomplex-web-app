@@ -101,6 +101,8 @@ export const authApi = api.injectEndpoints({
       async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
         try {
           await queryFulfilled;
+        } catch {
+          // intentionally ignore
         } finally {
           onLogoutFinally(dispatch);
         }

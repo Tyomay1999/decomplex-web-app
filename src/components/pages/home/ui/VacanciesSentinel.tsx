@@ -28,5 +28,5 @@ export function VacanciesSentinel({ disabled, onReach }: Props) {
     return () => io.disconnect();
   }, [disabled, onReach]);
 
-  return <div ref={ref} className="vacancies-sentinel" />;
+  return <div ref={ref} className="vacancies-sentinel" data-testid="vacancies-sentinel" />;
 }

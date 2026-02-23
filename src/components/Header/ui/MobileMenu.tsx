@@ -51,7 +51,7 @@ export function MobileMenu({
       if (!target) return;
 
       const clickedInsideMenu = !!target.closest("[data-mobile-menu]");
-      const clickedBurger = !!target.closest("[data-burger]");
+      const clickedBurger = !!target.closest('[data-burger], [data-testid="header-burger"]');
 
       if (!clickedInsideMenu && !clickedBurger) onNavigate?.();
     };
@@ -102,7 +102,11 @@ export function MobileMenu({
   return (
     <>
       <div className="mobile-menu-overlay" onClick={() => onNavigate?.()} aria-hidden="true" />
-      <nav className="mobile-menu bg-surface border-color" data-mobile-menu>
+      <nav
+        className="mobile-menu bg-surface border-color"
+        data-mobile-menu
+        data-testid="mobile-menu"
+      >
         <div className="mobile-controls">
           <div className="mobile-lang" role="group" aria-label={t("language")}>
             {LANGS.map((l) => (
@@ -121,7 +125,12 @@ export function MobileMenu({
             ))}
           </div>
 
-          <button type="button" className="mobile-theme-btn" onClick={onToggleTheme}>
+          <button
+            type="button"
+            className="mobile-theme-btn"
+            onClick={onToggleTheme}
+            data-theme-toggle
+          >
             {themeLabel}
           </button>
         </div>

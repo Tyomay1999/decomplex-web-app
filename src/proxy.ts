@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
 import { locales, defaultLocale } from "./i18n/config";
 import type { Locale } from "./i18n/config";
@@ -45,7 +45,7 @@ export function decideIntl(pathname: string, cookieLocale?: string): MiddlewareD
   return { kind: "intl", locale: segLocale };
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest): NextResponse {
   const pathname = req.nextUrl.pathname;
   const cookieLocale = readCookieLocale(req);
 

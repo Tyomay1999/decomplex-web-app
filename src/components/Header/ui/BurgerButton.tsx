@@ -15,6 +15,7 @@ export function BurgerButton({ isOpen, onToggle, label }: Props) {
       aria-label={label}
       aria-expanded={isOpen}
       data-burger
+      data-testid="header-burger"
     >
       <span className="burger-line" />
       <span className="burger-line" />

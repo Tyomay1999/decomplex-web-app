@@ -39,10 +39,14 @@ export function useVacanciesInfinite(params: Params) {
 
   const paramsKey = useMemo(() => buildParamsKey(params), [params]);
 
+  const hadFirstLoadRef = useRef(false);
+
   const loadFirst = useCallback(async () => {
     const stamp = ++stampRef.current;
 
-    setIsInitialLoading(true);
+    const isFirst = !hadFirstLoadRef.current;
+    if (isFirst) setIsInitialLoading(true);
+
     setItems([]);
     setNextCursor(null);
 
@@ -54,7 +58,10 @@ export function useVacanciesInfinite(params: Params) {
       setItems(res.vacancies ?? []);
       setNextCursor(res.nextCursor ?? null);
     } finally {
-      if (stampRef.current === stamp) setIsInitialLoading(false);
+      if (stampRef.current === stamp) {
+        hadFirstLoadRef.current = true;
+        setIsInitialLoading(false);
+      }
     }
   }, [trigger]);
 

@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type {
+  BaseQueryApi,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
 
 import { env } from "@/config/env";
 import type { RootState } from "@/store/store";
@@ -22,6 +27,8 @@ type RefreshResponseData = {
   user?: UserDto;
 };
 
+type NetworkErrorStatus = "FETCH_ERROR" | "TIMEOUT_ERROR";
+
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
@@ -38,6 +45,20 @@ function getUiLang(): Locale {
   return v === "en" || v === "hy" || v === "ru" ? v : "en";
 }
 
+function getNetworkErrorMessage(): string {
+  const lang = getUiLang();
+  if (lang === "ru") return "Проблема с сетью.";
+  if (lang === "hy") return "Ցանցային խնդիր։";
+  return "Network issue.";
+}
+
+function isNetworkFetchError(
+  error: FetchBaseQueryError | undefined,
+): error is { status: NetworkErrorStatus; error: string } {
+  if (!error) return false;
+  return error.status === "FETCH_ERROR" || error.status === "TIMEOUT_ERROR";
+}
+
 function getRootState(getState: () => unknown): RootState {
   return getState() as RootState;
 }
@@ -49,6 +70,19 @@ function toUrl(args: string | FetchArgs): string {
 function isRefreshRequest(args: string | FetchArgs): boolean {
   const url = toUrl(args);
   return url === "/auth/refresh" || url.endsWith("/auth/refresh");
+}
+
+function isMeRequest(args: string | FetchArgs): boolean {
+  const url = toUrl(args);
+  return url === "/me" || url.endsWith("/me") || url === "/auth/me" || url.endsWith("/auth/me");
+}
+
+function asSuccessNull(): ApiSuccessResponse<null> {
+  return { success: true, data: null };
+}
+
+function toExtraOptions(v: unknown): Record<string, unknown> {
+  return isRecord(v) ? v : {};
 }
 
 const rawBaseQuery = fetchBaseQuery({
@@ -71,10 +105,7 @@ const rawBaseQuery = fetchBaseQuery({
 
 let refreshPromise: Promise<RefreshResponseData> | null = null;
 
-async function runRefresh(
-  api: { getState: () => unknown; dispatch: (action: unknown) => void },
-  extraOptions: unknown,
-): Promise<RefreshResponseData> {
+async function runRefresh(api: BaseQueryApi, extraOptions: unknown): Promise<RefreshResponseData> {
   const state = api.getState() as RootState;
   const refreshToken = state.auth.refreshToken || getRefreshTokenFromCookie();
 
@@ -86,8 +117,8 @@ async function runRefresh(
 
   const refreshResult = await rawBaseQuery(
     { url: "/auth/refresh", method: "POST", body: { refreshToken } },
-    api as never,
-    extraOptions as never,
+    api,
+    toExtraOptions(extraOptions),
   );
 
   const payload: unknown = refreshResult.data;
@@ -115,18 +146,38 @@ async function runRefresh(
   };
 }
 
-const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions,
-) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  unknown
+> = async (args, api, extraOptions) => {
+  const opts = toExtraOptions(extraOptions);
 
-  if (result.error?.status !== 401) return result;
+  const result = await rawBaseQuery(args, api, opts);
+
+  if (isNetworkFetchError(result.error)) {
+    return {
+      error: {
+        status: result.error.status,
+        error: getNetworkErrorMessage(),
+      },
+    };
+  }
+
+  const status = result.error?.status;
+
+  if ((status === 401 || status === 403) && isMeRequest(args)) {
+    clearAuthCookies();
+    api.dispatch(clearSession());
+    return { data: asSuccessNull() };
+  }
+
+  if (status !== 401) return result;
   if (isRefreshRequest(args)) return result;
 
   if (!refreshPromise) {
-    refreshPromise = runRefresh(api, extraOptions).finally(() => {
+    refreshPromise = runRefresh(api, opts).finally(() => {
       refreshPromise = null;
     });
   }
@@ -146,7 +197,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       }),
     );
 
-    return await rawBaseQuery(args, api, extraOptions);
+    return await rawBaseQuery(args, api, opts);
   } catch {
     return result;
   }

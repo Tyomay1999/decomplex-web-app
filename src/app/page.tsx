@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
 import { defaultLocale, localeSet } from "../i18n/config";
 import type { Locale } from "../i18n/config";
 
@@ -10,7 +9,6 @@ function readCookie(name: string): string | null {
     .split(";")
     .map((p) => p.trim())
     .find((p) => p.startsWith(`${name}=`));
-
   if (!raw) return null;
 
   const value = raw.slice(name.length + 1);
@@ -28,16 +26,14 @@ function resolveLocale(): Locale {
 }
 
 export default function RootPage() {
-  const router = useRouter();
-
   useEffect(() => {
     const locale = resolveLocale();
     const target = `/${locale}`;
 
     if (window.location.pathname !== target) {
-      router.replace(target, { scroll: false });
+      window.location.replace(target);
     }
-  }, [router]);
+  }, []);
 
   return null;
 }

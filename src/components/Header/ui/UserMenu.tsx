@@ -116,6 +116,7 @@ export function UserMenu({
             onClick={onToggle}
             aria-expanded={isOpen}
             aria-label={t("menu")}
+            data-testid="user-menu-trigger"
           >
             <span className="avatar-circle text-primary">{avatarText}</span>
           </button>
@@ -126,6 +127,7 @@ export function UserMenu({
             onClick={onToggle}
             aria-expanded={isOpen}
             aria-label={t("menu")}
+            data-testid="user-menu-trigger"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -149,7 +151,11 @@ export function UserMenu({
         )}
 
         {isOpen ? (
-          <div className="user-menu__panel bg-surface border-color" role="menu">
+          <div
+            className="user-menu__panel bg-surface border-color"
+            role="menu"
+            data-testid="user-menu-panel"
+          >
             {isAuthenticated && userEmail ? (
               <div className="user-menu__section">
                 <div className="user-menu__email text-secondary">{userEmail}</div>

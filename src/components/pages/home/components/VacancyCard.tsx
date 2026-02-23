@@ -16,6 +16,8 @@ type Props = {
 export function VacancyCard({ vacancy, onClick }: Props) {
   return (
     <div
+      data-testid="vacancy-card"
+      data-vacancy-id={vacancy.id}
       className="vacancy-card bg-surface border-color"
       role="button"
       tabIndex={0}

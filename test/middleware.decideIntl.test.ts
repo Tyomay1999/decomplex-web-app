@@ -72,14 +72,14 @@ function makeReq(pathname: string, cookieLocale?: string): NextRequestLike {
   return { nextUrl, cookies };
 }
 
-describe("middleware locale routing", () => {
+describe("proxy locale routing", () => {
   it("redirects to cookie locale when locale segment is missing", async () => {
     cookieSetSpy.mockClear();
 
-    const mod = await import("../src/middleware");
+    const mod = await import("../src/proxy");
     const req = makeReq("/profile", "hy");
 
-    const res = mod.middleware(req as never) as unknown as ResponseLike;
+    const res = mod.proxy(req as never) as unknown as ResponseLike;
 
     expect(res.type).toBe("redirect");
     expect(res.url?.pathname).toBe("/hy/profile");
@@ -88,10 +88,10 @@ describe("middleware locale routing", () => {
   it("redirects to default locale when locale segment is missing and cookie is invalid", async () => {
     cookieSetSpy.mockClear();
 
-    const mod = await import("../src/middleware");
+    const mod = await import("../src/proxy");
     const req = makeReq("/vacancies", "xx");
 
-    const res = mod.middleware(req as never) as unknown as ResponseLike;
+    const res = mod.proxy(req as never) as unknown as ResponseLike;
 
     expect(res.type).toBe("redirect");
     expect(res.url?.pathname).toBe("/en/vacancies");
@@ -100,10 +100,10 @@ describe("middleware locale routing", () => {
   it("passes through and sets dc_locale cookie when locale segment exists", async () => {
     cookieSetSpy.mockClear();
 
-    const mod = await import("../src/middleware");
+    const mod = await import("../src/proxy");
     const req = makeReq("/ru/profile");
 
-    const res = mod.middleware(req as never) as unknown as ResponseLike;
+    const res = mod.proxy(req as never) as unknown as ResponseLike;
 
     expect(res.type).toBe("next");
     expect(cookieSetSpy).toHaveBeenCalledTimes(1);

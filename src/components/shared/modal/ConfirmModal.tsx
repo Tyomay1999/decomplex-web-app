@@ -35,11 +35,12 @@ export function ConfirmModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onOverlayClick}>
+    <div className="modal-overlay" data-testid="modal-overlay" onClick={onOverlayClick}>
       <div
         className="modal bg-surface"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
+        data-testid="modal"
         aria-modal="true"
       >
         <div className="modal-header border-color">
@@ -57,6 +58,7 @@ export function ConfirmModal({
             disabled={Boolean(isLoading)}
             onClick={onClose}
             aria-label="Close"
+            data-testid="modal-close"
           >
             ×
           </button>

@@ -5,8 +5,10 @@ export default [
   {
     ignores: ["node_modules", ".next", "dist", "out"],
   },
+
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+
   {
     rules: {
       "@typescript-eslint/no-unused-vars": [
@@ -14,9 +16,27 @@ export default [
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports" },
+      ],
       "no-empty": "error",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
+
+  {
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        console: "readonly",
+        process: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+      },
+    },
+    rules: {
+      "no-console": "off",
     },
   },
 ];
